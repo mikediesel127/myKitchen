@@ -1,0 +1,228 @@
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f4f8;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+input[type="text"], input[type="password"] {
+    transition: all 0.3s ease;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+}
+
+button {
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    transform: translateY(-1px);
+}
+
+#pantryList li, #mealSuggestions > div {
+    transition: all 0.3s ease;
+}
+
+#pantryList li:hover, #mealSuggestions > div:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.instructions {
+    transition: all 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeOut {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-10px); }
+}
+
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.fade-out {
+    animation: fadeOut 0.3s ease-in;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.pulse-animation:hover {
+    animation: pulse 0.5s infinite;
+}
+
+.ingredient-card {
+    transition: all 0.3s ease;
+}
+
+.ingredient-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+}
+
+.skeleton {
+    background: linear-gradient(to right, #f0f0f0 8%, #e0e0e0 18%, #f0f0f0 33%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+.category-toggle {
+    transition: all 0.3s ease;
+}
+
+.category-toggle.active {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+#notification {
+    background-color: #2f855a;
+}
+
+.ingredient-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.2em;
+    height: 1.2em;
+    border: 2px solid #2c5282;
+    border-radius: 0.3em;
+    margin-right: 0.5em;
+    display: grid;
+    place-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ingredient-checkbox::before {
+    content: "";
+    width: 0.65em;
+    height: 0.65em;
+    border-radius: 0.1em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em #2c5282;
+}
+
+.ingredient-checkbox:checked::before {
+    transform: scale(1);
+}
+
+.ingredient-checkbox:focus {
+    outline: 2px solid rgba(44, 82, 130, 0.5);
+    outline-offset: 2px;
+}
+
+#authForms {
+    transition: all 0.3s ease-in-out;
+}
+
+#authForms.hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+#loginTab, #registerTab {
+    transition: all 0.3s ease-in-out;
+}
+
+#loginTab:hover, #registerTab:hover {
+    background-color: rgba(59, 130, 246, 0.1);
+}
+
+#loginForm, #registerForm {
+    transition: all 0.3s ease-in-out;
+}
+
+#loginForm.hidden, #registerForm.hidden {
+    display: none;
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#loginForm:not(.hidden), #registerForm:not(.hidden) {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#mainContent {
+    transition: all 0.3s ease-in-out;
+}
+
+#mainContent.hidden {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.bg-gradient-to-r {
+    background-size: 200% 200%;
+    animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+#mealSuggestions > div {
+    transition: all 0.3s ease;
+}
+
+#mealSuggestions > div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+#generateMeals {
+    transition: all 0.3s ease;
+}
+
+#generateMeals:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#loadingIndicator {
+    backdrop-filter: blur(5px);
+}
+
+#mealModal {
+    backdrop-filter: blur(5px);
+}
+
+#toastContainer > div {
+    transition: all 0.3s ease;
+}
+
+#toastContainer > div:hover {
+    transform: translateY(-3px);
+}

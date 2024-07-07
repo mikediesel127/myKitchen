@@ -1,0 +1,59 @@
+{
+  "pantry": [
+    {
+      "name": "Beef",
+      "quantity": "1",
+      "category": "Meat"
+    },
+    {
+      "name": "Onion",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "Cheese",
+      "quantity": "1",
+      "category": "Dairy"
+    },
+    {
+      "name": "Potato",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Pasta",
+      "quantity": "1",
+      "category": "Grains"
+    },
+    {
+      "name": "Garlic",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Olive Oil",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "Pepper",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Salt",
+      "quantity": "1",
+      "category": "Spices"
+    },
+    {
+      "name": "Egg",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "peanut butter",
+      "quantity": "1",
+      "category": "Produce"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "cooking_mike": {
+    "password": "$2b$10$M9GJWYNl1mVRRMILfUTPxu8FdGs8Uq8uSA1VaDBe.jJhuG4reXxc2"
+  },
+  "Mike": {
+    "password": "$2b$10$MgJ7twSLXr61qshER67M5uwVtrpfDg1VLhqzWOhEEm6dPP0DeBzPW"
+  },
+  "": {
+    "password": "$2b$10$IsLoX9QBk0u.DstnoxhfnOVvsN/ASbruACHunj/BlUAsw3TOnwCpK"
+  },
+  "learning_mike": {
+    "password": "$2b$10$nrJt4fpj4WfUGggqPbG8je3aE3Bd7K00/G/0kiz27k0gF7G.Afqna"
+  },
+  "godchef": {
+    "password": "$2b$10$orAd/m.g.vH3vmL1B.bEf.Z3raoX269MEaiyEIVOscnEnUYkTngGC"
+  }
+}

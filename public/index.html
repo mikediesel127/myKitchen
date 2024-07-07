@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Chef</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.14.0/Sortable.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-green-100 font-sans min-h-screen flex flex-col">
+    <div id="notification" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-b shadow-md hidden z-50"></div>
+    
+    <header class="bg-white shadow-md py-4">
+        <div class="container mx-auto px-4 flex justify-between items-center">
+            <h1 class="text-4xl font-bold text-blue-600">Assistant Chef</h1>
+            <div id="userActions" class="hidden">
+                <span id="welcomeMessage" class="mr-4 text-gray-600"></span>
+                <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition-colors">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+<div id="authForms" class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 transform transition-all duration-300">
+    <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">Welcome to Assistant Chef</h2>
+    <div class="mb-6">
+        <div class="flex">
+            <button id="loginTab" class="flex-1 py-2 px-4 text-center font-semibold text-blue-500 border-b-2 border-blue-500">Login</button>
+            <button id="registerTab" class="flex-1 py-2 px-4 text-center font-semibold text-gray-500">Register</button>
+        </div>
+    </div>
+    <div id="loginForm" class="space-y-4">
+        <input type="text" id="loginUsername" placeholder="Username" required class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <input type="password" id="loginPassword" placeholder="Password" required class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <button id="loginButton" class="w-full bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors">Login</button>
+    </div>
+    <div id="registerForm" class="space-y-4 hidden">
+        <input type="text" id="registerUsername" placeholder="Username" required class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <input type="password" id="registerPassword" placeholder="Password" required class="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-300">
+        <button id="registerButton" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">Register</button>
+    </div>
+</div>
+
+        <div id="mainContent" class="hidden">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:scale-105">
+                    <h2 class="text-2xl font-semibold mb-4 text-blue-500">My Pantry</h2>
+                    <div class="mb-4 flex flex-col sm:flex-row">
+                        <input type="text" id="ingredientInput" placeholder="Add ingredient..." class="flex-grow p-2 border rounded-t sm:rounded-l sm:rounded-t-none focus:outline-none focus:ring-2 focus:ring-blue-300 mb-2 sm:mb-0">
+                        <button id="addIngredient" class="bg-blue-500 text-white px-4 py-2 rounded-b sm:rounded-r sm:rounded-b-none hover:bg-blue-600 transition-colors pulse-animation">
+                            <i class="fas fa-plus mr-2"></i>Add
+                        </button>
+                    </div>
+                    <div class="mb-2">
+                        <input type="checkbox" id="selectAllIngredients" class="ingredient-checkbox" checked>
+                        <label for="selectAllIngredients">Select All</label>
+                    </div>
+                    <ul id="pantryList" class="mt-4 space-y-2"></ul>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-6 transform transition-all duration-300 hover:scale-105">
+                    <h2 class="text-2xl font-semibold mb-4 text-green-500">Meal Suggestions</h2>
+                    <div id="categoryFilters" class="mb-6">
+                        <div class="flex flex-wrap gap-3" id="categoryToggleButtons"></div>
+                    </div>
+                    <button id="generateMeals" class="w-full bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors">
+                        <i class="fas fa-utensils mr-2"></i>Generate Meals
+                    </button>
+                    <div id="mealSuggestions" class="mt-6"></div>
+                </div>
+            </div>
+
+    <!-- ==========FAVOURITE MEALS SECTION=========== -->
+     <div id="favoriteMealsSection" class="mt-8 bg-white rounded-lg shadow-lg p-6">
+            <h2 class="text-2xl font-semibold mb-4 text-purple-500">Favorite Meals</h2>
+            <div id="favoriteMealsList"></div>
+        </div>
+        </div>
+    </main>
+    <!-- ========END OF FAVOURITE MEALS SECTION======= -->
+    <footer class="bg-gray-800 text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            &copy; 2024 Assistant Chef. All rights reserved.
+        </div>
+    </footer>
+
+    <div id="loadingIndicator" class="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex items-center justify-center hidden z-50">
+        <div class="bg-white p-4 rounded-lg shadow-lg">
+            <i class="fas fa-spinner fa-spin text-blue-500 text-4xl"></i>
+            <p class="mt-2 text-gray-700">Loading...</p>
+        </div>
+    </div>
+
+    <div id="mealModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div id="mealModalContent"></div>
+            <div class="text-right mt-4">
+                <button id="closeMealModal" class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-700 mr-2">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50"></div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+
+//DO THIS APP BUT FOR OTHER FIELDS TOO!!! - 
+//same concept, left is users data, right is genreated suggestions, bottom
+// is favourite suiggestions. eg. goals, clothes (wqardrobe > generate outfits)
+
+//========^^^^^^^^^^^^ DOW NOW!~!!!=================

@@ -1,0 +1,24 @@
+{
+  "favoriteMeals": [
+    {
+      "name": "Cheesy Beef Breakfast Burrito",
+      "ingredients": [
+        {
+          "name": "Beef",
+          "amount": "1/2 lb"
+        },
+        {
+          "name": "Onion",
+          "amount": "1/2 cup"
+        },
+        {
+          "name": "Cheese",
+          "amount": "1/4 cup"
+        }
+      ],
+      "description": "A hearty breakfast burrito filled with beef, onions, and melted cheese.",
+      "instructions": "Cook beef and onions in a skillet until browned. Add cheese and stir until melted. Fill a tortilla with the mixture and roll it up. Serve hot.",
+      "category": "Breakfast"
+    }
+  ]
+}
