@@ -1,8 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const { OpenAI } = require('openai');
-const path = require('path');
 const fs = require('fs').promises;
+const path = require('path');
 const bcrypt = require('bcrypt');
 const session = require('express-session');
 
@@ -22,11 +22,12 @@ app.use(session({
     cookie: { secure: process.env.NODE_ENV === 'production' }
 }));
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.WEBSITE_CONTENTSHARE ? path.join('/home', 'data') : path.join(__dirname, 'data');
 
 async function readData(filename) {
     const filePath = path.join(DATA_DIR, filename);
     try {
+        await fs.mkdir(DATA_DIR, { recursive: true });
         const data = await fs.readFile(filePath, 'utf8');
         return JSON.parse(data);
     } catch (error) {
@@ -39,8 +40,13 @@ async function readData(filename) {
 
 async function writeData(filename, data) {
     const filePath = path.join(DATA_DIR, filename);
-    await fs.mkdir(DATA_DIR, { recursive: true });
-    await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+    try {
+        await fs.mkdir(DATA_DIR, { recursive: true });
+        await fs.writeFile(filePath, JSON.stringify(data, null, 2));
+    } catch (error) {
+        console.error(`Error writing to file ${filename}:`, error);
+        throw error;
+    }
 }
 
 app.post('/api/register', async (req, res) => {
