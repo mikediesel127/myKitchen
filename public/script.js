@@ -11,11 +11,9 @@ const commonIngredients = [
 
 function showNotification(message, type = 'info') {
     const toast = document.createElement('div');
-    toast.className = `p-4 rounded-lg shadow-lg mb-3 ${type === 'error' ? 'bg-red-500' : 'bg-green-500'} text-white`;
+    toast.className = `fixed bottom-5 right-5 p-4 rounded-lg shadow-lg mb-3 ${type === 'error' ? 'bg-red-500' : type === 'warning' ? 'bg-yellow-500' : 'bg-green-500'} text-white fade-in`;
     toast.textContent = message;
-    
-    const toastContainer = document.getElementById('toastContainer');
-    toastContainer.appendChild(toast);
+    document.body.appendChild(toast);
     
     setTimeout(() => {
         toast.classList.add('fade-out');
@@ -46,12 +44,35 @@ function setupAutoSuggestions() {
     document.getElementById('ingredientInput').setAttribute('list', 'ingredient-suggestions');
 }
 
+// Add these functions to improve mobile UX
+function setupMobileOptimizations() {
+    const addIngredientBtn = document.getElementById('addIngredient');
+    const ingredientInput = document.getElementById('ingredientInput');
+
+    addIngredientBtn.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        this.classList.add('active');
+    });
+
+    addIngredientBtn.addEventListener('touchend', function(e) {
+        e.preventDefault();
+        this.classList.remove('active');
+        addIngredient();
+    });
+
+    ingredientInput.addEventListener('focus', function() {
+        setTimeout(() => {
+            this.scrollIntoView({behavior: 'smooth', block: 'center'});
+        }, 300);
+    });
+}
+
 function addIngredient() {
     const ingredientInput = document.getElementById('ingredientInput');
     const ingredient = ingredientInput.value.trim();
     if (ingredient) {
         if (pantry.some(item => item.name.toLowerCase() === ingredient.toLowerCase())) {
-            showNotification(`${ingredient} is already added`);
+            showNotification(`${ingredient} is already in your pantry`, 'warning');
             return;
         }
         const category = categorizeIngredient(ingredient);
@@ -64,9 +85,11 @@ function addIngredient() {
         renderPantryItem(newItem);
         ingredientInput.value = '';
         savePantry();
-        showNotification(`${ingredient} added to pantry`);
+        showNotification(`${ingredient} added to pantry`, 'success');
     }
 }
+
+// In script.js, replace the renderPantryItem function with:
 
 function renderPantryItem(item) {
     if (!item || !item.name || !item.category) {
@@ -77,25 +100,59 @@ function renderPantryItem(item) {
     let categorySection = document.querySelector(`#pantryList .category-${item.category}`);
     if (!categorySection) {
         categorySection = document.createElement('div');
-        categorySection.className = `category-${item.category}`;
+        categorySection.className = `category-${item.category} mb-4`;
         const icon = getCategoryIcon(item.category);
-        categorySection.innerHTML = `<h3 class="font-semibold mt-4 mb-2"><i class="${icon} mr-2"></i>${item.category}</h3>`;
+        categorySection.innerHTML = `
+            <h3 class="font-semibold text-lg mb-2 text-indigo-700">
+                <i class="${icon} mr-2"></i>${item.category}
+            </h3>
+        `;
         pantryList.appendChild(categorySection);
     }
-    const li = document.createElement('li');
-    li.className = 'flex justify-between items-center bg-gray-100 p-2 rounded mb-2 transition-all hover:bg-gray-200 fade-in ingredient-card';
+    const li = document.createElement('div');
+    li.className = 'flex justify-between items-center bg-white p-3 rounded-lg shadow-sm mb-2 transition-all hover:bg-indigo-50 ingredient-card fade-in';
     li.dataset.name = item.name;
     li.innerHTML = `
         <div class="flex items-center">
-            <input type="checkbox" id="ingredient-${item.name}" class="ingredient-checkbox mr-2" checked>
-            <label for="ingredient-${item.name}">${item.name} (${item.quantity || '1'})</label>
+            <input type="checkbox" id="ingredient-${item.name}" class="ingredient-checkbox mr-3" checked>
+            <label for="ingredient-${item.name}" class="text-gray-800 font-medium">${item.name}</label>
+            <span class="ml-2 text-sm text-gray-500">(${item.quantity || '1'})</span>
         </div>
-        <div>
-            <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeIngredient('${item.name}')">Remove</button>
+        <div class="flex items-center">
+            <button class="text-indigo-500 hover:text-indigo-700 transition-colors mr-2" onclick="editIngredient('${item.name}')">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeIngredient('${item.name}')">
+                <i class="fas fa-trash-alt"></i>
+            </button>
         </div>
     `;
-    li.classList.add('fade-in');
     categorySection.appendChild(li);
+}
+
+function editIngredient(ingredientName) {
+    const item = pantry.find(i => i.name === ingredientName);
+    if (item) {
+        const newQuantity = prompt(`Enter new quantity for ${item.name}:`, item.quantity);
+        if (newQuantity !== null) {
+            item.quantity = newQuantity;
+            updatePantryList();
+            savePantry();
+        }
+    }
+}
+
+// Add this function to get category icons
+function getCategoryIcon(category) {
+    const icons = {
+        'Produce': 'fas fa-carrot',
+        'Dairy': 'fas fa-cheese',
+        'Meat': 'fas fa-drumstick-bite',
+        'Grains': 'fas fa-bread-slice',
+        'Spices': 'fas fa-mortar-pestle',
+        'Other': 'fas fa-utensils'
+    };
+    return icons[category] || 'fas fa-utensils';
 }
 
 function categorizeIngredient(ingredient) {
@@ -211,32 +268,22 @@ function toggleCategory(event) {
     const allButtons = document.querySelectorAll('.category-toggle');
     const allButton = document.querySelector('.category-toggle[data-category="All"]');
 
+    const toggleClasses = (btn, active) => {
+        btn.classList.toggle('active', active);
+        btn.classList.toggle('bg-blue-500', active);
+        btn.classList.toggle('text-white', active);
+        btn.classList.toggle('bg-gray-200', !active);
+        btn.classList.toggle('text-gray-700', !active);
+    };
+
     if (category === 'All') {
         const shouldActivateAll = !button.classList.contains('active');
-        allButtons.forEach(btn => {
-            if (shouldActivateAll) {
-                btn.classList.add('active', 'bg-blue-500', 'text-white');
-                btn.classList.remove('bg-gray-200', 'text-gray-700');
-            } else {
-                btn.classList.remove('active', 'bg-blue-500', 'text-white');
-                btn.classList.add('bg-gray-200', 'text-gray-700');
-            }
-        });
+        allButtons.forEach(btn => toggleClasses(btn, shouldActivateAll));
     } else {
-        button.classList.toggle('active');
-        button.classList.toggle('bg-blue-500');
-        button.classList.toggle('text-white');
-        button.classList.toggle('bg-gray-200');
-        button.classList.toggle('text-gray-700');
-
+        toggleClasses(button, !button.classList.contains('active'));
+        
         const activeCategories = document.querySelectorAll('.category-toggle.active:not([data-category="All"])');
-        if (activeCategories.length === allButtons.length - 1) {
-            allButton.classList.add('active', 'bg-blue-500', 'text-white');
-            allButton.classList.remove('bg-gray-200', 'text-gray-700');
-        } else {
-            allButton.classList.remove('active', 'bg-blue-500', 'text-white');
-            allButton.classList.add('bg-gray-200', 'text-gray-700');
-        }
+        toggleClasses(allButton, activeCategories.length === allButtons.length - 1);
     }
 }
 
@@ -426,17 +473,23 @@ function toggleIngredientAmounts(button) {
 }
 
 function removeFavoriteMeal(mealName) {
-    favoriteMeals = favoriteMeals.filter(meal => meal.name !== mealName);
-    saveFavoriteMeals();
-    displayFavoriteMeals();
+    const confirmDelete = confirm(`Are you sure you want to remove "${mealName}" from your favorites?`);
+    if (confirmDelete) {
+        favoriteMeals = favoriteMeals.filter(meal => meal.name !== mealName);
+        saveFavoriteMeals();
+        displayFavoriteMeals();
+        showNotification(`"${mealName}" has been removed from your favorites.`, 'info');
+    }
 }
+
+// In script.js, update the displayMealSuggestions function:
 
 function displayMealSuggestions(meals) {
     const mealSuggestions = document.getElementById('mealSuggestions');
     mealSuggestions.innerHTML = '';
 
     if (!Array.isArray(meals) || meals.length === 0) {
-        mealSuggestions.innerHTML = '<p class="text-gray-500">No meal suggestions available with current ingredients and selected categories.</p>';
+        mealSuggestions.innerHTML = '<p class="text-gray-500 text-center py-4">No meal suggestions available with current ingredients and selected categories.</p>';
         return;
     }
 
@@ -445,36 +498,29 @@ function displayMealSuggestions(meals) {
         div.className = 'bg-white p-6 rounded-lg shadow-md mb-6 transition-all hover:shadow-lg';
         const isFavorite = favoriteMeals.some(favMeal => favMeal.name === meal.name);
         
-        const ingredientsWithoutAmounts = meal.ingredients.map(ing => ing.name).join(', ');
-        const ingredientsWithAmounts = meal.ingredients.map(ing => 
-            `<li><span class="font-semibold">${ing.name}</span> <span class="text-gray-500">(${ing.amount})</span></li>`
+        const ingredientsHtml = meal.ingredients.map(ing => 
+            `<li class="mb-1"><span class="font-semibold">${ing.name}</span> <span class="text-gray-500">(${ing.amount})</span></li>`
         ).join('');
 
         div.innerHTML = `
             <div class="flex justify-between items-center mb-3">
-                <h3 class="text-2xl font-semibold">${meal.name || 'Unnamed Meal'}</h3>
-                <div>
-                    <button class="toggle-amounts-btn mr-2 text-gray-500 hover:text-gray-700" onclick="toggleIngredientAmounts(this)">
-                        <i class="fas fa-balance-scale"></i>
-                    </button>
-                    <button class="favorite-btn ${isFavorite ? 'text-yellow-500' : 'text-gray-400'}" onclick="toggleFavorite(${JSON.stringify(meal).replace(/"/g, '&quot;')})">
-                        <i class="fas fa-star"></i>
-                    </button>
-                </div>
+                <h3 class="text-2xl font-semibold text-indigo-600">${meal.name || 'Unnamed Meal'}</h3>
+                <button class="favorite-btn ${isFavorite ? 'text-yellow-500' : 'text-gray-400'} text-xl" onclick="toggleFavorite(${JSON.stringify(meal).replace(/"/g, '&quot;')})">
+                    <i class="fas fa-star"></i>
+                </button>
             </div>
             <p class="text-sm text-gray-500 mb-2">${meal.category}</p>
-            <div class="text-gray-600 mb-3">
-                <strong>Ingredients:</strong> 
-                <span class="ingredients-without-amounts">${ingredientsWithoutAmounts}</span>
-                <ul class="ingredients-with-amounts hidden list-disc pl-5 mt-2">
-                    ${ingredientsWithAmounts}
+            <p class="mb-3 text-gray-700">${meal.description || 'No description provided'}</p>
+            <div class="mb-4">
+                <h4 class="font-semibold mb-2 text-gray-700">Ingredients:</h4>
+                <ul class="list-disc pl-5">
+                    ${ingredientsHtml}
                 </ul>
             </div>
-            <p class="mb-3"><strong>Description:</strong> ${meal.description || 'No description provided'}</p>
-            <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors" onclick="toggleInstructions(this)">Show Instructions</button>
-            <div class="instructions hidden mt-4 p-4 bg-gray-100 rounded">
-                <h4 class="font-semibold mb-2">Instructions:</h4>
-                <p>${meal.instructions || 'No instructions provided'}</p>
+            <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors" onclick="toggleInstructions(this)">Show Instructions</button>
+            <div class="instructions hidden mt-4 p-4 bg-gray-50 rounded">
+                <h4 class="font-semibold mb-2 text-gray-700">Instructions:</h4>
+                <p class="text-gray-600">${meal.instructions || 'No instructions provided'}</p>
             </div>
         `;
         mealSuggestions.appendChild(div);
@@ -559,7 +605,7 @@ function performSearch() {
         ingredientList.innerHTML = '<h3 class="font-semibold mb-2">Ingredients:</h3>';
         ingredientResults.forEach(item => {
             const li = document.createElement('li');
-            li.textContent = `${item.name} (${item.quantity})`;
+            li.innerHTML = `<a href="#" class="text-indigo-600 hover:text-indigo-800" onclick="scrollToPantryItem('${item.name}')">${item.name} (${item.quantity})</a>`;
             ingredientList.appendChild(li);
         });
         searchResults.appendChild(ingredientList);
@@ -570,10 +616,28 @@ function performSearch() {
         mealList.innerHTML = '<h3 class="font-semibold mb-2 mt-4">Favorite Meals:</h3>';
         mealResults.forEach(meal => {
             const li = document.createElement('li');
-            li.textContent = meal.name;
+            li.innerHTML = `<a href="#" class="text-indigo-600 hover:text-indigo-800" onclick="scrollToFavoriteMeal('${meal.name}')">${meal.name}</a>`;
             mealList.appendChild(li);
         });
         searchResults.appendChild(mealList);
+    }
+}
+
+function scrollToPantryItem(itemName) {
+    const pantryItem = document.querySelector(`#pantryList [data-name="${itemName}"]`);
+    if (pantryItem) {
+        pantryItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        pantryItem.classList.add('highlight');
+        setTimeout(() => pantryItem.classList.remove('highlight'), 2000);
+    }
+}
+
+function scrollToFavoriteMeal(mealName) {
+    const favoriteMeal = document.querySelector(`#favoriteMealsList [data-name="${mealName}"]`);
+    if (favoriteMeal) {
+        favoriteMeal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        favoriteMeal.classList.add('highlight');
+        setTimeout(() => favoriteMeal.classList.remove('highlight'), 2000);
     }
 }
 
@@ -684,21 +748,17 @@ function setupDragAndDrop() {
 function createCategoryFilters() {
     const categories = ['All', 'Breakfast', 'Lunch', 'Dinner', 'Dessert', 'Snack'];
     const container = document.getElementById('categoryToggleButtons');
-
-    // Clear existing buttons
     container.innerHTML = '';
 
     categories.forEach(category => {
         const button = document.createElement('button');
-        button.className = 'category-toggle px-4 py-2 rounded-full font-medium transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-300';
+        button.className = 'category-toggle px-4 py-2 rounded-full font-medium transition-all duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-indigo-300';
         button.textContent = category;
         button.dataset.category = category;
         button.onclick = toggleCategory;
         
         if (category === 'All') {
-            button.classList.add('active', 'bg-blue-500', 'text-white');
-        } else {
-            button.classList.add('bg-blue-500', 'text-white');
+            button.classList.add('active');
         }
         
         container.appendChild(button);
@@ -871,6 +931,7 @@ function loadUserData() {
     setupAutoSuggestions();
     createCategoryFilters(); // Add this line
     bindLoggedInEvents();
+    setupMobileOptimizations(); // Add this line
 }
 
 document.addEventListener('DOMContentLoaded', () => {

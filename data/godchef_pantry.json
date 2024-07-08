@@ -49,11 +49,6 @@
       "name": "Egg",
       "quantity": "1",
       "category": "Other"
-    },
-    {
-      "name": "peanut butter",
-      "quantity": "1",
-      "category": "Produce"
     }
   ]
 }

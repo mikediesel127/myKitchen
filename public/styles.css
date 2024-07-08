@@ -1,10 +1,22 @@
+:root {
+    --primary-color: #4f46e5;
+    --secondary-color: #818cf8;
+    --text-color: #1f2937;
+    --background-color: #f3f4f6;
+}
+
 html {
     scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'Poppins', sans-serif;
-    background-color: #f0f4f8;
+    font-family: 'Lato', sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+}
+
+.font-display {
+    font-family: 'Playfair Display', serif;
 }
 
 .container {
@@ -16,8 +28,8 @@ input[type="text"], input[type="password"] {
 }
 
 input[type="text"]:focus, input[type="password"]:focus {
-    border-color: #4299e1;
-    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.5);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
 }
 
 button {
@@ -28,12 +40,13 @@ button:hover {
     transform: translateY(-1px);
 }
 
-#pantryList li, #mealSuggestions > div {
+.ingredient-card {
     transition: all 0.3s ease;
+    border-left: 4px solid var(--primary-color);
 }
 
-#pantryList li:hover, #mealSuggestions > div:hover {
-    transform: translateY(-2px);
+.ingredient-card:hover {
+    transform: translateX(5px);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -69,15 +82,6 @@ button:hover {
     animation: pulse 0.5s infinite;
 }
 
-.ingredient-card {
-    transition: all 0.3s ease;
-}
-
-.ingredient-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 @keyframes shimmer {
     0% { background-position: -1000px 0; }
     100% { background-position: 1000px 0; }
@@ -91,14 +95,23 @@ button:hover {
 
 .category-toggle {
     transition: all 0.3s ease;
+    border: 2px solid #a5b4fc;
+    background-color: transparent;
+    color: #4f46e5;
+}
+
+.category-toggle:hover {
+    background-color: #e0e7ff;
 }
 
 .category-toggle.active {
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    background-color: #4f46e5;
+    color: white;
+    border-color: #4f46e5;
 }
 
 #notification {
-    background-color: #2f855a;
+    background-color: var(--primary-color);
 }
 
 .ingredient-checkbox {
@@ -106,7 +119,7 @@ button:hover {
     -webkit-appearance: none;
     width: 1.2em;
     height: 1.2em;
-    border: 2px solid #2c5282;
+    border: 2px solid var(--primary-color);
     border-radius: 0.3em;
     margin-right: 0.5em;
     display: grid;
@@ -122,7 +135,7 @@ button:hover {
     border-radius: 0.1em;
     transform: scale(0);
     transition: 120ms transform ease-in-out;
-    box-shadow: inset 1em 1em #2c5282;
+    box-shadow: inset 1em 1em var(--primary-color);
 }
 
 .ingredient-checkbox:checked::before {
@@ -130,7 +143,7 @@ button:hover {
 }
 
 .ingredient-checkbox:focus {
-    outline: 2px solid rgba(44, 82, 130, 0.5);
+    outline: 2px solid rgba(79, 70, 229, 0.5);
     outline-offset: 2px;
 }
 
@@ -148,7 +161,7 @@ button:hover {
 }
 
 #loginTab:hover, #registerTab:hover {
-    background-color: rgba(59, 130, 246, 0.1);
+    background-color: rgba(79, 70, 229, 0.1);
 }
 
 #loginForm, #registerForm {
@@ -176,21 +189,8 @@ button:hover {
     transform: translateY(20px);
 }
 
-.bg-gradient-to-r {
-    background-size: 200% 200%;
-    animation: gradientShift 15s ease infinite;
-}
-
-@keyframes gradientShift {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+.bg-gradient-to-br {
+    background-image: linear-gradient(to bottom right, #eef2ff, #e0e7ff);
 }
 
 #mealSuggestions > div {
@@ -225,4 +225,178 @@ button:hover {
 
 #toastContainer > div:hover {
     transform: translateY(-3px);
+}
+
+/* Mobile optimizations */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    #pantryList, #mealSuggestions, #favoriteMealsList {
+        padding: 1rem;
+    }
+
+    .category-toggle {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    #generateMeals {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--secondary-color);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Additional mobile optimizations */
+@media (max-width: 640px) {
+    body {
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    .ingredient-card {
+        padding: 0.75rem;
+    }
+
+    #mealModal .relative {
+        width: 95%;
+    }
+}
+
+/* Improved form styling */
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+}
+
+/* Button enhancements */
+button {
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Improved modal styling */
+#mealModal .relative {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Fade-in animation for content */
+.fade-in-content {
+    animation: fadeInContent 0.5s ease-out;
+}
+
+@keyframes fadeInContent {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hover effect for clickable items */
+.hover-effect {
+    transition: all 0.3s ease;
+}
+
+.hover-effect:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Improved loading indicator */
+#loadingIndicator .bg-white {
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Fancy checkbox style */
+.fancy-checkbox {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 1.5em;
+    height: 1.5em;
+    border: 2px solid var(--primary-color);
+    border-radius: 0.25em;
+    display: inline-grid;
+    place-content: center;
+}
+
+.fancy-checkbox::before {
+    content: "";
+    width: 0.875em;
+    height: 0.875em;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--primary-color);
+    transform-origin: center;
+    clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.fancy-checkbox:checked::before {
+    transform: scale(1);
+}
+
+/* Improved notification styling */
+#notification {
+    border-radius: 0 0 0.5rem 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Add a subtle pattern to the background for more visual interest */
+body {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%239C92AC' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+
+.highlight {
+    animation: highlightPulse 2s;
+}
+
+@keyframes highlightPulse {
+    0%, 100% { background-color: transparent; }
+    50% { background-color: #e0e7ff; }
+}
+#pantry, #meal-suggestions, #favorite-meals {
+    scroll-margin-top: 80px; /* Adjust this value based on your header height */
 }

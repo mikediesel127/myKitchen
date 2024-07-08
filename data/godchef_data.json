@@ -19,6 +19,74 @@
       "description": "A hearty breakfast burrito filled with beef, onions, and melted cheese.",
       "instructions": "Cook beef and onions in a skillet until browned. Add cheese and stir until melted. Fill a tortilla with the mixture and roll it up. Serve hot.",
       "category": "Breakfast"
+    },
+    {
+      "name": "Garlic Potato Breakfast Casserole",
+      "ingredients": [
+        {
+          "name": "Potato",
+          "amount": "1, diced"
+        },
+        {
+          "name": "Garlic",
+          "amount": "2 cloves, minced"
+        },
+        {
+          "name": "Cheese",
+          "amount": "1/4 cup, shredded"
+        },
+        {
+          "name": "Egg",
+          "amount": "2"
+        },
+        {
+          "name": "Salt",
+          "amount": "to taste"
+        },
+        {
+          "name": "Pepper",
+          "amount": "to taste"
+        }
+      ],
+      "description": "A comforting breakfast casserole with garlic, potatoes, and cheese.",
+      "instructions": "In a baking dish, layer potatoes, garlic, and cheese. In a bowl, whisk eggs with salt and pepper. Pour over the potato mixture. Bake in the oven until set. Serve hot.",
+      "category": "Breakfast"
+    },
+    {
+      "name": "Beef and Potato Breakfast Skillet",
+      "ingredients": [
+        {
+          "name": "Beef",
+          "amount": "1/2 lb"
+        },
+        {
+          "name": "Potato",
+          "amount": "1, diced"
+        },
+        {
+          "name": "Onion",
+          "amount": "1, diced"
+        },
+        {
+          "name": "Garlic",
+          "amount": "2 cloves, minced"
+        },
+        {
+          "name": "Salt",
+          "amount": "to taste"
+        },
+        {
+          "name": "Pepper",
+          "amount": "to taste"
+        },
+        {
+          "name": "Egg",
+          "amount": "2"
+        }
+      ],
+      "description": "A hearty breakfast skillet with beef, potatoes, and eggs.",
+      "instructions": "In a skillet, cook beef until browned. Add onion, potato, and garlic. Season with salt and pepper. Cook until potatoes are tender. Make wells in the skillet and crack eggs into them. Cover and cook until eggs are set. Serve hot.",
+      "category": "Breakfast"
     }
   ]
 }

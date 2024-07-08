@@ -9,14 +9,25 @@ const session = require('express-session');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
+let openai;
+try {
+    openai = new OpenAI({
+        apiKey: process.env.OPENAI_API_KEY
+    });
+} catch (error) {
+    console.error('Error initializing OpenAI:', error);
+    process.exit(1);
+}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+if (!process.env.SESSION_SECRET) {
+    console.error('SESSION_SECRET is not set');
+    process.exit(1);
+}
+
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'your_secret_key',
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: process.env.NODE_ENV === 'production' }
@@ -133,58 +144,37 @@ app.post('/api/generate-meals', async (req, res) => {
 
         const prompt = `Given these ingredients: ${ingredients.join(', ')}, suggest 8 semi-creative meal ideas ONLY for the following categories: ${categories.join(', ')}. For each meal, provide a name, list of ingredients with specific amounts, a brief description, simple recipe instructions, and its category. The category MUST be one of the following: ${categories.join(', ')}. Format the response as a JSON array of objects, each with 'name', 'ingredients' (as an array of objects with 'name' and 'amount' properties), 'description', 'instructions', and 'category' properties.`;
 
-        const completion = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: prompt }],
-            temperature: 0.7,
-        });
+        let meals = [];
+        let attempts = 0;
+        const maxAttempts = 3;
 
-        let content = completion.choices[0].message.content.trim();
-        
-        // Attempt to clean up the response
-        content = content.replace(/```json\n?|\n?```/g, ''); // Remove code block markers
-        content = content.replace(/^\s*\[/, '[').replace(/\]\s*$/, ']'); // Ensure it starts with '[' and ends with ']'
-
-        let meals;
-        try {
-            meals = JSON.parse(content);
-        } catch (parseError) {
-            console.error('JSON Parse Error:', parseError);
-            console.log('Raw content:', content);
-            return res.status(500).json({ error: 'Failed to parse meal suggestions. Please try again.' });
-        }
-
-        if (!Array.isArray(meals)) {
-            return res.status(500).json({ error: 'Invalid meal suggestions format. Please try again.' });
-        }
-
-        meals = meals.filter(meal => categories.includes(meal.category));
-
-        while (meals.length < 5 && meals.length < 10) {
-            const additionalCompletion = await openai.chat.completions.create({
+        while (meals.length < 8 && attempts < maxAttempts) {
+            const completion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: `Generate ${5 - meals.length} more meal ideas for the categories: ${categories.join(', ')}. Use the same format as before.` }],
+                messages: [{ role: "user", content: prompt }],
                 temperature: 0.7,
             });
 
-            let additionalContent = additionalCompletion.choices[0].message.content.trim();
-            additionalContent = additionalContent.replace(/```json\n?|\n?```/g, '');
-            additionalContent = additionalContent.replace(/^\s*\[/, '[').replace(/\]\s*$/, ']');
+            let content = completion.choices[0].message.content.trim();
+            content = content.replace(/```json\n?|\n?```/g, '');
+            content = content.replace(/^\s*\[/, '[').replace(/\]\s*$/, ']');
 
-            let additionalMeals;
             try {
-                additionalMeals = JSON.parse(additionalContent);
+                let parsedMeals = JSON.parse(content);
+                if (Array.isArray(parsedMeals)) {
+                    parsedMeals = parsedMeals.filter(meal => categories.includes(meal.category));
+                    meals = [...meals, ...parsedMeals];
+                }
             } catch (parseError) {
-                console.error('JSON Parse Error (Additional Meals):', parseError);
-                console.log('Raw additional content:', additionalContent);
-                break; // Exit the loop if parsing fails
+                console.error('JSON Parse Error:', parseError);
+                console.log('Raw content:', content);
             }
 
-            if (Array.isArray(additionalMeals)) {
-                meals = [...meals, ...additionalMeals.filter(meal => categories.includes(meal.category))];
-            } else {
-                break; // Exit the loop if the response is not an array
-            }
+            attempts++;
+        }
+
+        if (meals.length === 0) {
+            return res.status(500).json({ error: 'Failed to generate valid meal suggestions. Please try again.' });
         }
 
         meals = meals.slice(0, 8);

@@ -1,0 +1,10 @@
+ive just launched my app, auto meal generator and manager etc., in azure.
+
+using node and jquery, ensuring professional, best app ever, innoavting, smooth and exceptional, next-level impressive UI/UX, creative, top-tier and beyond app, in all aspects, while maintiaing concnise, lightweight.
+
+I'll give you some main files, i want you to first understand the codebase and how they work toegther. Then review, how we can improve, optmize, according to my description of our efforts. Give me parts to change, in whole setions. no comment placeholders. and not the entire codebase everytimer, to save energy. Im on windows.
+
+server is on root, the rest are in /public. and the data stuff is in /data
+
+Lets begin making this the best professional published app it can be! both front and back, piece by piece.
+
