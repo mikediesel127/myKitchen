@@ -9,6 +9,11 @@
       "name": "Tomato",
       "quantity": "1",
       "category": "Produce"
+    },
+    {
+      "name": "Pasta",
+      "quantity": "1",
+      "category": "Grains"
     }
   ]
 }

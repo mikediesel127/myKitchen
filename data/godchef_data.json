@@ -87,6 +87,102 @@
       "description": "A hearty breakfast skillet with beef, potatoes, and eggs.",
       "instructions": "In a skillet, cook beef until browned. Add onion, potato, and garlic. Season with salt and pepper. Cook until potatoes are tender. Make wells in the skillet and crack eggs into them. Cover and cook until eggs are set. Serve hot.",
       "category": "Breakfast"
+    },
+    {
+      "name": "Garlic Pepper Onion Dip",
+      "ingredients": [
+        {
+          "name": "Garlic",
+          "amount": "2 cloves"
+        },
+        {
+          "name": "Pepper",
+          "amount": "1/2 tsp"
+        },
+        {
+          "name": "Salt",
+          "amount": "1/2 tsp"
+        },
+        {
+          "name": "Onion",
+          "amount": "1 medium"
+        },
+        {
+          "name": "Olive",
+          "amount": "2 tbsp"
+        }
+      ],
+      "description": "A creamy and flavorful dip with a hint of garlic, pepper, and onion.",
+      "instructions": "In a food processor, blend garlic, pepper, salt, onion, and olive oil until smooth. Serve as a dip with your favorite chips or veggies.",
+      "category": "Snack"
+    },
+    {
+      "name": "Pineapple Basil Sorbet",
+      "ingredients": [
+        {
+          "name": "Pineapple",
+          "amount": "2 cups"
+        },
+        {
+          "name": "Bazil",
+          "amount": "1/4 cup"
+        },
+        {
+          "name": "Sugar",
+          "amount": "1/2 cup"
+        },
+        {
+          "name": "Water",
+          "amount": "1/4 cup"
+        }
+      ],
+      "description": "A refreshing and light sorbet with a hint of basil.",
+      "instructions": "In a blender, combine pineapple, basil, sugar, and water. Blend until smooth. Pour mixture into a shallow dish and freeze for 4-6 hours, stirring occasionally. Serve chilled.",
+      "category": "Dessert"
+    }
+  ],
+  "friends": [
+    "creator",
+    "god"
+  ],
+  "sharedMeals": [
+    {
+      "name": "Chicken and Tomato Stir-Fry",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "amount": "1 lb"
+        },
+        {
+          "name": "Tomato",
+          "amount": "2 large"
+        },
+        {
+          "name": "Bell pepper",
+          "amount": "1"
+        },
+        {
+          "name": "Soy sauce",
+          "amount": "2 tbsp"
+        },
+        {
+          "name": "Ginger",
+          "amount": "1 tsp"
+        },
+        {
+          "name": "Garlic",
+          "amount": "2 cloves"
+        },
+        {
+          "name": "Vegetable oil",
+          "amount": "2 tbsp"
+        }
+      ],
+      "description": "A quick and easy stir-fry recipe that combines tender chicken and tomatoes with a savory soy-based sauce.",
+      "instructions": "In a wok or skillet, heat vegetable oil. Add garlic and ginger, then chicken. Stir-fry until cooked. Add sliced tomatoes and bell pepper. Pour in soy sauce and cook until heated through. Serve hot.",
+      "category": "Dinner",
+      "sharedBy": "god",
+      "sharedAt": "2024-07-09T16:32:08.444Z"
     }
   ]
 }

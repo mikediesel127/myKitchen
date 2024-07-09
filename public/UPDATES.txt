@@ -1,8 +1,33 @@
 UPDATES:
-1 - we need to severly advance and optimise the prompting and generating system, to be flawless and effectgive at any scale. At the moment, its giving things like 'ionion icecream' and 'parmesan cheese creamy desert' . These are not really cool. Beef in a desert? no. I likle the 'creative' directive in the prompt, but to a degree. still needs to be apppropriate. This AI needs to be the best, flawless, limitless, but also approriate and not putting beef in deserts. 
+--_NEW UIPDATES 10/07!!
+Add a difficulty rating to meals that the AI classifies!
 
-2. 'Onion' is going into 'other' category because im entering it as capitalised. we should clearly find a way to solve this. make consistent and logical and reliable, across our categorise array and fucntion and also the entering process and everywhere needed. fix, smart logical concnise.
+3. 'IMPROVE MEAL' BUTTON ON FAVOURITES dialogue, to review and optimize the meal for the user 
 
-3. lets limit to 5 meals at a time, to make the genrating faster.
+4. a slowly moving gallery feature of something...suggested meals or friends meals
 
-4.
+5.
+	*USE ASSISTANTS BUT NOT THREADS! FORM gpt API! checkl gpt chat for info
+
+-----== ROADMAP FEATURE ==-----
+
+1. discover section at the top, with other user's recently favourited meals '[user] favourited a meal!' \
+
+2. small auto meal oprompts?sections like 'try a quick desert?' etc. automtically selects 4 ingredients and lists itq
+
+3. abvility to refine/improve favourite meals in the favouruite meals popup view. type in the problems and click fix, will automnatically improve recipe to make better based on promopts., and list the changes, and say confirm refinement? or not, in a nice visual custom popup on the spot., not taking over the screen.
+
+4. abiliuty the sthe search to gernate any meal.. they can type in a meala nd click genreate within the search bar, to intsally load and pop it up. and also, maybe a 'secocfici meal' in the genreation area also a input ability for certain prompt
+
+5. WARM NICE CSS REVAMP.
+
+6.simple "explore chefs. get ranked, the more meals you cook. levelling system. Prompt on dashboard 'challenge: cook first meal! 0/1"
+
+7. fill out the favbourite meals section by havign different versions 'microwave, airfryer, oven' tabs, within the favourite meal popup displaty box after viewing
+
+
+--------FROM claude----2
+User Recipe Sharing: Allow users to share their favorite generated recipes with other users of the app.
+
+Pantry Expiration Tracking: Implement a system to track expiration dates of pantry items and notify users when items are about to expire.
+-----

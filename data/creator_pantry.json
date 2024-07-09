@@ -1,0 +1,29 @@
+{
+  "pantry": [
+    {
+      "name": "Pasta",
+      "quantity": "1",
+      "category": "Grains"
+    },
+    {
+      "name": "Beef",
+      "quantity": "1",
+      "category": "Meat"
+    },
+    {
+      "name": "Onion",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "Chicken",
+      "quantity": "1",
+      "category": "Meat"
+    }
+  ]
+}

@@ -44,6 +44,21 @@
       "name": "Pasta",
       "quantity": "1",
       "category": "Grains"
+    },
+    {
+      "name": "Pineapple",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Chicken",
+      "quantity": "1",
+      "category": "Meat"
+    },
+    {
+      "name": "Bazil",
+      "quantity": "1",
+      "category": "Other"
     }
   ]
 }

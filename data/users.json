@@ -17,5 +17,9 @@
   "god": {
     "password": "$2b$10$1YKNWNss16C6zx01fBenmOaUEDLv4Em90KXa97vnY/m6/AI.97/ni",
     "createdAt": "2024-07-09T03:58:54.433Z"
+  },
+  "creator": {
+    "password": "$2b$10$qVS91AZcghE2EcKdOEDr3ukjUy2OF.wd6GC.GJ5qJ6/Hp8JiHfdui",
+    "createdAt": "2024-07-09T14:44:29.114Z"
   }
 }

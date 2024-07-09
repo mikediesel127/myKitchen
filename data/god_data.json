@@ -1,0 +1,113 @@
+{
+  "favoriteMeals": [
+    {
+      "name": "Chicken and Tomato Stir-Fry",
+      "ingredients": [
+        {
+          "name": "Chicken",
+          "amount": "1 lb"
+        },
+        {
+          "name": "Tomato",
+          "amount": "2 large"
+        },
+        {
+          "name": "Bell pepper",
+          "amount": "1"
+        },
+        {
+          "name": "Soy sauce",
+          "amount": "2 tbsp"
+        },
+        {
+          "name": "Ginger",
+          "amount": "1 tsp"
+        },
+        {
+          "name": "Garlic",
+          "amount": "2 cloves"
+        },
+        {
+          "name": "Vegetable oil",
+          "amount": "2 tbsp"
+        }
+      ],
+      "description": "A quick and easy stir-fry recipe that combines tender chicken and tomatoes with a savory soy-based sauce.",
+      "instructions": "In a wok or skillet, heat vegetable oil. Add garlic and ginger, then chicken. Stir-fry until cooked. Add sliced tomatoes and bell pepper. Pour in soy sauce and cook until heated through. Serve hot.",
+      "category": "Dinner"
+    }
+  ],
+  "friendRequests": [],
+  "friends": [
+    "creator",
+    "godchef"
+  ],
+  "sharedMeals": [
+    {
+      "name": "Cheesy Beef Breakfast Burrito",
+      "ingredients": [
+        {
+          "name": "Beef",
+          "amount": "1/2 lb"
+        },
+        {
+          "name": "Onion",
+          "amount": "1/2 cup"
+        },
+        {
+          "name": "Cheese",
+          "amount": "1/4 cup"
+        }
+      ],
+      "description": "A hearty breakfast burrito filled with beef, onions, and melted cheese.",
+      "instructions": "Cook beef and onions in a skillet until browned. Add cheese and stir until melted. Fill a tortilla with the mixture and roll it up. Serve hot.",
+      "category": "Breakfast",
+      "sharedBy": "godchef",
+      "sharedAt": "2024-07-09T16:30:46.261Z"
+    },
+    {
+      "name": "Cheesy Beef Breakfast Burrito",
+      "ingredients": [
+        {
+          "name": "Beef",
+          "amount": "1/2 lb"
+        },
+        {
+          "name": "Onion",
+          "amount": "1/2 cup"
+        },
+        {
+          "name": "Cheese",
+          "amount": "1/4 cup"
+        }
+      ],
+      "description": "A hearty breakfast burrito filled with beef, onions, and melted cheese.",
+      "instructions": "Cook beef and onions in a skillet until browned. Add cheese and stir until melted. Fill a tortilla with the mixture and roll it up. Serve hot.",
+      "category": "Breakfast",
+      "sharedBy": "godchef",
+      "sharedAt": "2024-07-09T17:08:33.869Z"
+    },
+    {
+      "name": "Cheesy Beef Breakfast Burrito",
+      "ingredients": [
+        {
+          "name": "Beef",
+          "amount": "1/2 lb"
+        },
+        {
+          "name": "Onion",
+          "amount": "1/2 cup"
+        },
+        {
+          "name": "Cheese",
+          "amount": "1/4 cup"
+        }
+      ],
+      "description": "A hearty breakfast burrito filled with beef, onions, and melted cheese.",
+      "instructions": "Cook beef and onions in a skillet until browned. Add cheese and stir until melted. Fill a tortilla with the mixture and roll it up. Serve hot.",
+      "category": "Breakfast",
+      "sharedBy": "godchef",
+      "sharedAt": "2024-07-09T18:24:43.996Z"
+    }
+  ]
+}

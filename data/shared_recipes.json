@@ -1,0 +1,32 @@
+{
+  "1720524807889": {
+    "name": "Garlic Pepper Onion Dip",
+    "ingredients": [
+      {
+        "name": "Garlic",
+        "amount": "2 cloves"
+      },
+      {
+        "name": "Pepper",
+        "amount": "1/2 tsp"
+      },
+      {
+        "name": "Salt",
+        "amount": "1/2 tsp"
+      },
+      {
+        "name": "Onion",
+        "amount": "1 medium"
+      },
+      {
+        "name": "Olive",
+        "amount": "2 tbsp"
+      }
+    ],
+    "description": "A creamy and flavorful dip with a hint of garlic, pepper, and onion.",
+    "instructions": "In a food processor, blend garlic, pepper, salt, onion, and olive oil until smooth. Serve as a dip with your favorite chips or veggies.",
+    "category": "Snack",
+    "sharedBy": "godchef",
+    "sharedAt": "2024-07-09T11:33:27.889Z"
+  }
+}

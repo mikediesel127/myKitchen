@@ -21,6 +21,19 @@ function showNotification(message, type = 'info') {
     }, 3000);
 }
 
+function setActiveNavLink() {
+    const currentPage = window.location.pathname.split('/').pop();
+    const navLinks = document.querySelectorAll('.main-nav-link');
+    navLinks.forEach(link => {
+        const linkPage = link.getAttribute('href');
+        if (linkPage === currentPage) {
+            link.classList.add('active');
+        } else {
+            link.classList.remove('active');
+        }
+    });
+}
+
 function getCategoryIcon(category) {
     const icons = {
         'produce': 'fas fa-carrot',
@@ -110,7 +123,20 @@ function renderPantryItem(item) {
         `;
         pantryList.appendChild(categorySection);
     }
+
+
     const li = document.createElement('div');
+    // EXPIRATION-----
+     const expirationDateInput = document.createElement('input');
+    expirationDateInput.type = 'date';
+    expirationDateInput.value = item.expirationDate || '';
+    expirationDateInput.addEventListener('change', (e) => {
+        updatePantryItemExpiration(item.name, e.target.value);
+    });
+    
+    li.appendChild(expirationDateInput);
+    //END OF EXPIRATION-----
+
     li.className = 'flex justify-between items-center bg-white p-3 rounded-lg shadow-sm mb-2 transition-all hover:bg-indigo-50 ingredient-card fade-in';
     li.dataset.name = item.name;
     li.innerHTML = `
@@ -219,6 +245,244 @@ async function savePantry() {
         console.error('Error saving pantry:', error);
         showNotification('Failed to save pantry changes', 'error');
     }
+}
+
+// -------- USER RECIPE SHARING --------
+// -------- PANTRY MANAGEMENT --------
+
+// -------- END PANTRY MANAGEMENT --------
+
+// -------- FRIEND MANAGEMENT --------
+function loadFriends() {
+    const friendsList = document.getElementById('friendsList');
+    if (!friendsList) return;
+
+    fetch('/api/friends')
+        .then(response => response.json())
+        .then(friends => {
+            friendsList.innerHTML = '';
+            friends.forEach(friend => {
+                const friendElement = document.createElement('div');
+                friendElement.className = 'flex justify-between items-center bg-white p-3 rounded-lg shadow-sm';
+                friendElement.innerHTML = `
+                    <span>${friend}</span>
+                    <button class="bg-indigo-500 text-white px-3 py-1 rounded text-sm hover:bg-indigo-600 transition-colors" onclick="showShareMealModal('${friend}')">
+                        Share Meal
+                    </button>
+                `;
+                friendsList.appendChild(friendElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading friends:', error);
+            showNotification('Failed to load friends', 'error');
+        });
+}
+
+function addFriend() {
+    const friendUsername = document.getElementById('friendUsername').value;
+    fetch('/api/add-friend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ friendUsername })
+    })
+        .then(response => response.json())
+        .then(data => {
+            showNotification(data.message, 'success');
+            loadFriends();
+        })
+        .catch(error => {
+            console.error('Error adding friend:', error);
+            showNotification('Failed to add friend', 'error');
+        });
+}
+
+// -------- MEAL SHARING --------
+function showShareMealModal(mealName) {
+    fetch('/api/friends')
+        .then(response => response.json())
+        .then(friends => {
+            const content = `
+                <h3 class="text-lg font-medium leading-6 text-gray-900 mb-4">Share ${mealName} with:</h3>
+                <select id="friendToShare" class="w-full p-2 mb-4 border rounded">
+                    ${friends.map(friend => `<option value="${friend}">${friend}</option>`).join('')}
+                </select>
+                <div class="text-right">
+                    <button onclick="shareMeal('${mealName}')" class="bg-indigo-500 text-white px-4 py-2 rounded mr-2 hover:bg-indigo-600 transition-colors">Share</button>
+                </div>
+            `;
+            createModal(content);
+        })
+        .catch(error => {
+            console.error('Error loading friends:', error);
+            showNotification('Failed to load friends', 'error');
+        });
+}
+
+// Add this function to script.js
+function createModal(content) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="relative bg-white rounded-lg shadow-xl p-6 m-4 max-w-xl w-full">
+            ${content}
+            <button onclick="this.closest('.fixed').remove()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function shareMeal(mealName) {
+    const friendSelect = document.getElementById('friendToShare');
+    if (!friendSelect) {
+        showNotification('Error: Friend selection not found', 'error');
+        return;
+    }
+    const friendUsername = friendSelect.value;
+    
+    fetch('/api/share-meal', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mealName, friendUsername })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.error) {
+            showNotification(data.error, 'error');
+        } else {
+            showNotification(data.message, 'success');
+            document.querySelector('.fixed').remove(); // Close the modal
+        }
+    })
+    .catch(error => {
+        console.error('Error sharing meal:', error);
+        showNotification('Failed to share meal', 'error');
+    });
+}
+
+function loadSharedMeals() {
+    const sharedMealsList = document.getElementById('sharedMealsList');
+    if (!sharedMealsList) return;
+
+    fetch('/api/shared-meals')
+        .then(response => response.json())
+        .then(meals => {
+            sharedMealsList.innerHTML = '';
+            meals.forEach(meal => {
+                const mealElement = document.createElement('div');
+                mealElement.className = 'bg-white p-4 rounded-lg shadow-md';
+                mealElement.innerHTML = `
+                    <h3 class="text-xl font-semibold mb-2">${meal.name}</h3>
+                    <p class="text-gray-600 mb-2">Shared by: ${meal.sharedBy}</p>
+                    <p class="text-gray-600 mb-2">Category: ${meal.category}</p>
+                    <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors" onclick="viewMealDetails(${JSON.stringify(meal)})">
+                        View Details
+                    </button>
+                `;
+                sharedMealsList.appendChild(mealElement);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading shared meals:', error);
+            showNotification('Failed to load shared meals', 'error');
+        });
+}
+
+function createSharedRecipeElement(recipe) {
+    const element = document.createElement('div');
+    element.className = 'bg-white rounded-lg shadow-md p-4 mb-4';
+    element.innerHTML = `
+        <h3 class="text-xl font-semibold mb-2">${recipe.name}</h3>
+        <p class="text-gray-600 mb-2">Shared by: ${recipe.sharedBy}</p>
+        <p class="text-gray-600 mb-2">Category: ${recipe.category}</p>
+        <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors" onclick="viewSharedRecipe('${recipe.id}')">
+            View Recipe
+        </button>
+    `;
+    return element;
+}
+
+function viewSharedRecipe(recipeId) {
+    fetch(`/api/shared-recipe/${recipeId}`)
+    .then(response => response.json())
+    .then(recipe => {
+        const modalContent = document.getElementById('sharedRecipeModalContent');
+        modalContent.innerHTML = `
+            <h2 class="text-2xl font-bold mb-4">${recipe.name}</h2>
+            <p class="mb-2"><strong>Category:</strong> ${recipe.category}</p>
+            <p class="mb-2"><strong>Shared by:</strong> ${recipe.sharedBy}</p>
+            <p class="mb-4">${recipe.description}</p>
+            <h3 class="text-xl font-semibold mb-2">Ingredients:</h3>
+            <ul class="list-disc pl-5 mb-4">
+                ${recipe.ingredients.map(ing => `<li>${ing.amount} ${ing.name}</li>`).join('')}
+            </ul>
+            <h3 class="text-xl font-semibold mb-2">Instructions:</h3>
+            <p>${recipe.instructions}</p>
+        `;
+        document.getElementById('sharedRecipeModal').classList.remove('hidden');
+    })
+    .catch(error => {
+        console.error('Error fetching shared recipe:', error);
+        showNotification('Failed to load recipe details', 'error');
+    });
+}
+
+function closeSharedRecipeModal() {
+    document.getElementById('sharedRecipeModal').classList.add('hidden');
+}
+// -------- END USER RECIPE SHARING --------
+
+// -------- PANTRY EXPIRATION TRACKING --------
+function updatePantryItemExpiration(itemName, expirationDate) {
+    fetch('/api/update-pantry-item', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ itemName, expirationDate })
+    })
+    .then(response => response.json())
+    .then(data => {
+        showNotification('Pantry item updated successfully', 'success');
+        loadPantry();
+    })
+    .catch(error => {
+        console.error('Error updating pantry item:', error);
+        showNotification('Failed to update pantry item', 'error');
+    });
+}
+
+function checkExpiringItems() {
+    fetch('/api/expiring-items')
+    .then(response => response.json())
+    .then(items => {
+        if (items.length > 0) {
+            showExpirationNotification(items);
+        }
+    })
+    .catch(error => {
+        console.error('Error checking expiring items:', error);
+    });
+}
+
+function showExpirationNotification(items) {
+    const notification = document.createElement('div');
+    notification.className = 'fixed bottom-4 right-4 p-4 bg-yellow-500 text-white rounded-lg shadow-lg';
+    notification.innerHTML = `
+        <h4 class="font-semibold mb-2">Expiring Items Alert</h4>
+        <p>The following items will expire soon:</p>
+        <ul class="list-disc pl-4">
+            ${items.map(item => `<li>${item.name} (Expires: ${new Date(item.expirationDate).toLocaleDateString()})</li>`).join('')}
+        </ul>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => {
+        notification.remove();
+    }, 10000);
 }
 
 function removeIngredient(ingredientName) {
@@ -382,6 +646,7 @@ function displayFavoriteMeals() {
                     <span class="font-medium">${meal.name}</span>
                     <div>
                         <button class="text-blue-500 hover:text-blue-700 transition-colors mr-2" onclick="viewMeal('${meal.name}')">View</button>
+                        <button class="text-green-500 hover:text-green-700 transition-colors mr-2" onclick="showShareMealModal('${meal.name}')">Share</button>
                         <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeFavoriteMeal('${meal.name}')">Remove</button>
                     </div>
                 </li>
@@ -395,6 +660,21 @@ function displayFavoriteMeals() {
     });
 
     favoriteMealsList.innerHTML = html;
+}
+
+function updateNotifications() {
+    fetch('/api/notifications')
+        .then(response => response.json())
+        .then(data => {
+            const meNotification = document.getElementById('meNotification');
+            if (data.totalNotifications > 0) {
+                meNotification.textContent = data.totalNotifications;
+                meNotification.classList.remove('hidden');
+            } else {
+                meNotification.classList.add('hidden');
+            }
+        })
+        .catch(error => console.error('Error fetching notifications:', error));
 }
 
 function viewMeal(mealName) {
@@ -466,8 +746,7 @@ function removeFavoriteMeal(mealName) {
     }
 }
 
-// In script.js, update the displayMealSuggestions function:
-
+// -------- MEAL DISPLAY FUNCTIONS --------
 function displayMealSuggestions(meals) {
     const mealSuggestions = document.getElementById('mealSuggestions');
     mealSuggestions.innerHTML = '';
@@ -478,49 +757,63 @@ function displayMealSuggestions(meals) {
     }
 
     meals.forEach(meal => {
-        const div = document.createElement('div');
-        div.className = 'bg-white p-6 rounded-lg shadow-md mb-6 transition-all hover:shadow-lg';
-        const isFavorite = favoriteMeals.some(favMeal => favMeal.name === meal.name);
-        
-        const ingredientsHtml = meal.ingredients.map(ing => 
-            `<li class="mb-1"><span class="font-semibold">${ing.name}</span> <span class="text-gray-500">(${ing.amount})</span></li>`
-        ).join('');
-
-        div.innerHTML = `
-            <div class="flex justify-between items-center mb-3">
-                <h3 class="text-2xl font-semibold text-indigo-600">${meal.name || 'Unnamed Meal'}</h3>
-                <button class="favorite-btn ${isFavorite ? 'text-yellow-500' : 'text-gray-400'} text-xl" onclick="toggleFavorite(${JSON.stringify(meal).replace(/"/g, '&quot;')})">
-                    <i class="fas fa-star"></i>
-                </button>
-            </div>
-            <p class="text-sm text-gray-500 mb-2">${meal.category}</p>
-            <p class="mb-3 text-gray-700">${meal.description || 'No description provided'}</p>
-            <div class="mb-4">
-                <h4 class="font-semibold mb-2 text-gray-700">Ingredients:</h4>
-                <ul class="list-disc pl-5">
-                    ${ingredientsHtml}
-                </ul>
-            </div>
-            <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors" onclick="toggleInstructions(this)">Show Instructions</button>
-            <div class="instructions hidden mt-4 p-4 bg-gray-50 rounded">
-                <h4 class="font-semibold mb-2 text-gray-700">Instructions:</h4>
-                <p class="text-gray-600">${meal.instructions || 'No instructions provided'}</p>
-            </div>
-        `;
-        mealSuggestions.appendChild(div);
+        const mealElement = createMealElement(meal);
+        mealSuggestions.appendChild(mealElement);
     });
 }
 
+function createMealElement(meal) {
+    const div = document.createElement('div');
+    div.className = 'bg-white p-6 rounded-lg shadow-md mb-6 transition-all hover:shadow-lg';
+    const isFavorite = favoriteMeals.some(favMeal => favMeal.name === meal.name);
+    
+    const ingredientsHtml = meal.ingredients.map(ing => 
+        `<li class="mb-1"><span class="font-semibold">${ing.name}</span> <span class="text-gray-500">(${ing.amount})</span></li>`
+    ).join('');
+
+    div.innerHTML = `
+        <div class="flex justify-between items-center mb-3">
+            <h3 class="text-2xl font-semibold text-indigo-600">${meal.name || 'Unnamed Meal'}</h3>
+            <button class="favorite-btn ${isFavorite ? 'text-yellow-500' : 'text-gray-400'} text-xl" onclick="toggleFavorite(${JSON.stringify(meal).replace(/"/g, '&quot;')})">
+                <i class="fas fa-star"></i>
+            </button>
+        </div>
+        <p class="text-sm text-gray-500 mb-2">${meal.category}</p>
+        <p class="mb-3 text-gray-700">${meal.description || 'No description provided'}</p>
+        <div class="mb-4">
+            <h4 class="font-semibold mb-2 text-gray-700">Ingredients:</h4>
+            <ul class="list-disc pl-5">
+                ${ingredientsHtml}
+            </ul>
+        </div>
+        <button class="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition-colors" onclick="toggleInstructions(this)">Show Instructions</button>
+        <div class="instructions hidden mt-4 p-4 bg-gray-50 rounded">
+            <h4 class="font-semibold mb-2 text-gray-700">Instructions:</h4>
+            <p class="text-gray-600">${meal.instructions || 'No instructions provided'}</p>
+        </div>
+    `;
+    return div;
+}
+
+function createIngredientsHtml(ingredients) {
+    return ingredients.map(ing => 
+        `<li class="mb-1"><span class="font-semibold">${ing.name}</span> <span class="text-gray-500">(${ing.amount})</span></li>`
+    ).join('');
+}
+// -------- END MEAL DISPLAY FUNCTIONS --------
+
+// Modify the existing toggleFavorite function
 function toggleFavorite(meal) {
     const index = favoriteMeals.findIndex(m => m.name === meal.name);
     if (index === -1) {
         favoriteMeals.push(meal);
         showNotification(`${meal.name} added to favorites`);
+        saveFavoriteMeals();
     } else {
         favoriteMeals.splice(index, 1);
         showNotification(`${meal.name} removed from favorites`);
+        saveFavoriteMeals();
     }
-    saveFavoriteMeals();
     displayMealSuggestions(currentMeals);
     displayFavoriteMeals();
 }
@@ -539,8 +832,11 @@ async function saveFavoriteMeals() {
         }
     } catch (error) {
         console.error('Error saving favorite meals:', error);
+        showNotification('Failed to save favorite meals', 'error');
     }
 }
+
+
 
 function setupSearch() {
     const searchContainer = document.createElement('div');
@@ -631,6 +927,8 @@ function toggleInstructions(button) {
     instructionsDiv.classList.toggle('hidden');
     button.textContent = instructionsDiv.classList.contains('hidden') ? 'Show Instructions' : 'Hide Instructions';
 }
+
+// In script.js, update the generateMealsWithOpenAI function
 
 async function generateMealsWithOpenAI() {
     console.log('generateMealsWithOpenAI function called');
@@ -765,35 +1063,67 @@ function createCategoryFilters() {
     });
 }
 
+
+function hideLoginForm() {
+    const authForms = document.getElementById('authForms');
+    const mainContent = document.getElementById('mainContent');
+    const userActions = document.getElementById('userActions');
+    const navLinks = document.querySelectorAll('.main-nav-link');
+    const headerTitle = document.querySelector('header h1');
+    const kitchenNav = document.getElementById('kitchenNav');
+    const meNav = document.getElementById('meNav');
+    
+    if (authForms) authForms.classList.add('hidden');
+    if (mainContent) mainContent.classList.remove('hidden');
+    if (userActions) userActions.classList.remove('hidden');
+    if (headerTitle) headerTitle.classList.remove('hidden');
+    if (kitchenNav) kitchenNav.classList.remove('hidden');
+    if (meNav) meNav.classList.remove('hidden');
+    navLinks.forEach(link => link.classList.remove('hidden'));
+}
+
+function showLoginForm() {
+    const authForms = document.getElementById('authForms');
+    const mainContent = document.getElementById('mainContent');
+    const userActions = document.getElementById('userActions');
+    const navLinks = document.querySelectorAll('.main-nav-link');
+    const headerTitle = document.querySelector('header h1');
+    const kitchenNav = document.getElementById('kitchenNav');
+    const meNav = document.getElementById('meNav');
+    
+    if (authForms) authForms.classList.remove('hidden');
+    if (mainContent) mainContent.classList.add('hidden');
+    if (userActions) userActions.classList.add('hidden');
+    if (headerTitle) headerTitle.classList.add('hidden');
+    if (kitchenNav) kitchenNav.classList.add('hidden');
+    if (meNav) meNav.classList.add('hidden');
+    navLinks.forEach(link => link.classList.add('hidden'));
+    
+    // Reset form fields
+    const loginUsername = document.getElementById('loginUsername');
+    const loginPassword = document.getElementById('loginPassword');
+    const registerUsername = document.getElementById('registerUsername');
+    const registerPassword = document.getElementById('registerPassword');
+    if (loginUsername) loginUsername.value = '';
+    if (loginPassword) loginPassword.value = '';
+    if (registerUsername) registerUsername.value = '';
+    if (registerPassword) registerPassword.value = '';
+}
+
 function setupAuthForms() {
     const loginTab = document.getElementById('loginTab');
     const registerTab = document.getElementById('registerTab');
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
 
-    function showLoginForm() {
-    document.getElementById('authForms').classList.remove('hidden');
-    document.getElementById('mainContent').classList.add('hidden');
-    document.getElementById('userActions').classList.add('hidden');
-    
-    const loginTab = document.getElementById('loginTab');
-    const registerTab = document.getElementById('registerTab');
-    const loginForm = document.getElementById('loginForm');
-    const registerForm = document.getElementById('registerForm');
-
-    loginTab.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
-    loginTab.classList.remove('text-gray-500');
-    registerTab.classList.add('text-gray-500');
-    registerTab.classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
-    loginForm.classList.remove('hidden');
-    registerForm.classList.add('hidden');
-
-    // Clear input fields
-    document.getElementById('loginUsername').value = '';
-    document.getElementById('loginPassword').value = '';
-    document.getElementById('registerUsername').value = '';
-    document.getElementById('registerPassword').value = '';
-}
+    function showLoginTab() {
+        loginTab.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
+        loginTab.classList.remove('text-gray-500');
+        registerTab.classList.add('text-gray-500');
+        registerTab.classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+    }
 
     function showRegisterForm() {
         registerTab.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
@@ -804,7 +1134,7 @@ function setupAuthForms() {
         loginForm.classList.add('hidden');
     }
 
-    loginTab.addEventListener('click', showLoginForm);
+    loginTab.addEventListener('click', showLoginTab);
     registerTab.addEventListener('click', showRegisterForm);
 
     // Set up event listeners for login and register buttons
@@ -812,11 +1142,6 @@ function setupAuthForms() {
     document.getElementById('registerButton').addEventListener('click', register);
 }
 
-function hideLoginForm() {
-    document.getElementById('authForms').classList.add('hidden');
-    document.getElementById('mainContent').classList.remove('hidden');
-    document.getElementById('userActions').classList.remove('hidden');
-}
 
 async function login(event) {
     event.preventDefault();
@@ -834,11 +1159,16 @@ async function login(event) {
         });
         const data = await response.json();
         if (response.ok) {
-            showNotification('Logged in successfully');
+            showNotification('Logged in successfully', 'success');
             isLoggedIn = true;
             hideLoginForm();
             loadUserData();
-            document.getElementById('welcomeMessage').textContent = `Welcome, ${username}!`;
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            if (welcomeMessage) {
+                welcomeMessage.textContent = `Welcome, ${username}!`;
+            }
+            // Redirect to the dashboard or main page after successful login
+            window.location.href = 'index.html';
         } else {
             showNotification(data.error || 'Login failed', 'error');
         }
@@ -883,6 +1213,7 @@ function logout() {
             isLoggedIn = false;
             clearUserData();
             showLoginForm();
+            window.location.href = 'index.html'; // Redirect to the main page after logout
         })
         .catch(error => {
             console.error('Logout error:', error);
@@ -936,8 +1267,7 @@ function loadUserData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     setupAuthForms();
-    document.getElementById('logoutButton').addEventListener('click', logout);
-
+   
     const currentPage = window.location.pathname.split('/').pop();
     const dashboardLink = document.getElementById('dashboardLink');
     const myKitchenLink = document.getElementById('myKitchenLink');
@@ -945,10 +1275,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Set active state for main navigation
     if (currentPage === 'dashboard.html') {
-        dashboardLink.classList.add('active');
+        if (dashboardLink) dashboardLink.classList.add('active');
         if (kitchenNav) kitchenNav.style.display = 'none';
     } else {
-        myKitchenLink.classList.add('active');
+        if (myKitchenLink) myKitchenLink.classList.add('active');
     }
 
     fetch('/api/check-auth')
@@ -962,13 +1292,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 setupDragAndDrop();
                 createCategoryFilters();
                 loadUserData();
-                document.getElementById('welcomeMessage').textContent = `Welcome, ${data.username}!`;
-
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome, ${data.username}!`;
+                }
+                loadFriends();
+                loadSharedMeals();
+                const addFriendBtn = document.getElementById('addFriendBtn');
+                if (addFriendBtn) {
+                    addFriendBtn.addEventListener('click', addFriend);
+                }
+                const logoutButton = document.getElementById('logoutButton');
+                if (logoutButton) {
+                    logoutButton.addEventListener('click', logout);
+                }
+                checkExpiringItems();
+                setInterval(checkExpiringItems, 24 * 60 * 60 * 1000); // Check once a day
+                
                 // Setup section navigation active states
                 if (kitchenNav) {
                     const sectionLinks = document.querySelectorAll('.section-nav-link');
                     const sections = document.querySelectorAll('main > div[id]');
-
                     function setActiveSection() {
                         let currentSection = '';
                         sections.forEach(section => {
@@ -978,12 +1322,10 @@ document.addEventListener('DOMContentLoaded', () => {
                                 currentSection = section.id;
                             }
                         });
-
                         sectionLinks.forEach(link => {
                             link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
                         });
                     }
-
                     window.addEventListener('scroll', setActiveSection);
                     setActiveSection();
                 }
