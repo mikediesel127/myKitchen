@@ -13,5 +13,9 @@
   },
   "godchef": {
     "password": "$2b$10$orAd/m.g.vH3vmL1B.bEf.Z3raoX269MEaiyEIVOscnEnUYkTngGC"
+  },
+  "god": {
+    "password": "$2b$10$1YKNWNss16C6zx01fBenmOaUEDLv4Em90KXa97vnY/m6/AI.97/ni",
+    "createdAt": "2024-07-09T03:58:54.433Z"
   }
 }

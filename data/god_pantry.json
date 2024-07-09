@@ -1,0 +1,14 @@
+{
+  "pantry": [
+    {
+      "name": "Chicken",
+      "quantity": "1",
+      "category": "Meat"
+    },
+    {
+      "name": "Tomato",
+      "quantity": "1",
+      "category": "Produce"
+    }
+  ]
+}

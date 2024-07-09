@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Culinary Companion - Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gradient-to-br from-indigo-50 to-blue-100 font-sans min-h-screen flex flex-col">
+<header class="bg-white shadow-md py-4">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-indigo-600 font-display mb-4 sm:mb-0">AutoChef</h1>
+            <nav class="flex space-x-4 mb-4 sm:mb-0">
+                <a href="dashboard.html" id="dashboardLink" class="main-nav-link text-indigo-600 hover:text-indigo-800 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+                    <i class="fas fa-chart-bar mr-2"></i> Dashboard
+                </a>
+                <a href="index.html" id="myKitchenLink" class="main-nav-link text-indigo-600 hover:text-indigo-800 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+                    <i class="fas fa-home mr-2"></i> My Kitchen
+                </a>
+            </nav>
+        </div>
+        <div id="userActions" class="hidden mt-4 sm:mt-2 text-center sm:text-right">
+            <span id="welcomeMessage" class="mr-4 text-gray-600 block sm:inline"></span>
+            <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors text-sm mt-2 sm:mt-0">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </div>
+</header>
+
+
+
+    <main class="flex-grow container mx-auto px-4 py-8">
+        <h2 class="text-2xl font-semibold mb-6 text-indigo-800">Recent Chefs</h2>
+        <div id="recentUsers" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </main>
+
+    <footer class="bg-indigo-800 text-white py-4 mt-8">
+        <div class="container mx-auto px-4 text-center">
+            &copy; 2024 Culinary Companion. All rights reserved.
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

@@ -60,19 +60,70 @@ async function writeData(filename, data) {
     }
 }
 
+// --------RECENT USERS DASHBOARD--------------
+// --------RECENT USERS DASHBOARD--------------
+
+
+app.get('/api/recent-users', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+    try {
+        const allUsers = await readData('users.json');
+        const recentUsers = Object.entries(allUsers)
+            .map(([username, userData]) => ({
+                username,
+                createdAt: userData.createdAt || new Date(0).toISOString() // Fallback for older users
+            }))
+            .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+            .slice(0, 10); // Get top 10 recent users
+
+        res.json(recentUsers);
+    } catch (error) {
+        console.error('Error fetching recent users:', error);
+        res.status(500).json({ error: 'An error occurred while fetching recent users' });
+    }
+});
+
+// New route to get a user's favorite meals
+app.get('/api/user-favorite-meals/:username', async (req, res) => {
+    if (!req.session.user) {
+        return res.status(401).json({ error: 'Not authenticated' });
+    }
+    try {
+        const { username } = req.params;
+        const userData = await readData(`${username}_data.json`);
+        res.json(userData.favoriteMeals || []);
+    } catch (error) {
+        console.error('Error fetching user favorite meals:', error);
+        res.status(500).json({ error: 'An error occurred while fetching user favorite meals' });
+    }
+});
+
+// --------END OF RECENT USERS DASHBOARD--------------
+// --------END OF RECENT USERS DASHBOARD--------------
+
 app.post('/api/register', async (req, res) => {
     const { username, password } = req.body;
     if (!username || !password) {
         return res.status(400).json({ error: 'Username and password are required' });
     }
-    const users = await readData('users.json');
-    if (users[username]) {
-        return res.status(400).json({ error: 'Username already exists' });
+    try {
+        let users = await readData('users.json');
+        if (users[username]) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        users[username] = { 
+            password: hashedPassword,
+            createdAt: new Date().toISOString()
+        };
+        await writeData('users.json', users);
+        res.json({ message: 'User registered successfully' });
+    } catch (error) {
+        console.error('Error registering user:', error);
+        res.status(500).json({ error: 'An error occurred while registering the user' });
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    users[username] = { password: hashedPassword };
-    await writeData('users.json', users);
-    res.json({ message: 'User registered successfully' });
 });
 
 app.post('/api/login', async (req, res) => {
@@ -142,42 +193,33 @@ app.post('/api/generate-meals', async (req, res) => {
             return res.status(400).json({ error: 'Invalid categories provided' });
         }
 
-        const prompt = `Given these ingredients: ${ingredients.join(', ')}, suggest 8 semi-creative meal ideas ONLY for the following categories: ${categories.join(', ')}. For each meal, provide a name, list of ingredients with specific amounts, a brief description, simple recipe instructions, and its category. The category MUST be one of the following: ${categories.join(', ')}. Format the response as a JSON array of objects, each with 'name', 'ingredients' (as an array of objects with 'name' and 'amount' properties), 'description', 'instructions', and 'category' properties.`;
+        const prompt = `Given these ingredients: ${ingredients.join(', ')}, suggest 5 creative meal ideas for the following categories: ${categories.join(', ')}. For each meal, provide a name, list of ingredients with specific amounts, a brief description, simple recipe instructions, and its category. The category MUST be one of the following: ${categories.join(', ')}. Format the response as a JSON array of objects, each with 'name', 'ingredients' (as an array of objects with 'name' and 'amount' properties), 'description', 'instructions', and 'category' properties.`;
 
-        let meals = [];
-        let attempts = 0;
-        const maxAttempts = 3;
+        const completion = await openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: prompt }],
+            temperature: 0.7,
+        });
 
-        while (meals.length < 8 && attempts < maxAttempts) {
-            const completion = await openai.chat.completions.create({
-                model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: prompt }],
-                temperature: 0.7,
-            });
+        let content = completion.choices[0].message.content.trim();
+        content = content.replace(/```json\n?|\n?```/g, '');
+        content = content.replace(/^\s*\[/, '[').replace(/\]\s*$/, ']');
 
-            let content = completion.choices[0].message.content.trim();
-            content = content.replace(/```json\n?|\n?```/g, '');
-            content = content.replace(/^\s*\[/, '[').replace(/\]\s*$/, ']');
-
-            try {
-                let parsedMeals = JSON.parse(content);
-                if (Array.isArray(parsedMeals)) {
-                    parsedMeals = parsedMeals.filter(meal => categories.includes(meal.category));
-                    meals = [...meals, ...parsedMeals];
-                }
-            } catch (parseError) {
-                console.error('JSON Parse Error:', parseError);
-                console.log('Raw content:', content);
-            }
-
-            attempts++;
+        let meals;
+        try {
+            meals = JSON.parse(content);
+        } catch (parseError) {
+            console.error('JSON Parse Error:', parseError);
+            console.log('Raw content:', content);
+            return res.status(500).json({ error: 'Failed to parse meal suggestions. Please try again.' });
         }
 
-        if (meals.length === 0) {
-            return res.status(500).json({ error: 'Failed to generate valid meal suggestions. Please try again.' });
+        if (!Array.isArray(meals)) {
+            return res.status(500).json({ error: 'Invalid meal suggestions format. Please try again.' });
         }
 
-        meals = meals.slice(0, 8);
+        meals = meals.filter(meal => categories.includes(meal.category));
+        meals = meals.slice(0, 5); // Limit to 5 meals
 
         meals = meals.map(meal => ({
             name: meal.name || 'Unnamed Meal',

@@ -1,0 +1,8 @@
+UPDATES:
+1 - we need to severly advance and optimise the prompting and generating system, to be flawless and effectgive at any scale. At the moment, its giving things like 'ionion icecream' and 'parmesan cheese creamy desert' . These are not really cool. Beef in a desert? no. I likle the 'creative' directive in the prompt, but to a degree. still needs to be apppropriate. This AI needs to be the best, flawless, limitless, but also approriate and not putting beef in deserts. 
+
+2. 'Onion' is going into 'other' category because im entering it as capitalised. we should clearly find a way to solve this. make consistent and logical and reliable, across our categorise array and fucntion and also the entering process and everywhere needed. fix, smart logical concnise.
+
+3. lets limit to 5 meals at a time, to make the genrating faster.
+
+4.

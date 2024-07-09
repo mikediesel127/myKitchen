@@ -13,24 +13,44 @@
 <body class="bg-gradient-to-br from-indigo-50 to-blue-100 font-sans min-h-screen flex flex-col">
     <div id="notification" class="fixed top-0 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-b shadow-md hidden z-50"></div>
     
-    <header class="bg-white shadow-md py-4">
-        <div class="container mx-auto px-4 flex justify-between items-center">
-            <h1 class="text-3xl md:text-4xl font-bold text-indigo-600 font-display">My Kitchen</h1>
-            <div id="userActions" class="hidden">
-                <span id="welcomeMessage" class="mr-4 text-gray-600 hidden md:inline"></span>
-                <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors text-sm">Logout</button>
-            </div>
+<header class="bg-white shadow-md py-4">
+    <div class="container mx-auto px-4">
+        <div class="flex flex-col sm:flex-row justify-between items-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-indigo-600 font-display mb-4 sm:mb-0">AutoChef</h1>
+            <nav class="flex space-x-4 mb-4 sm:mb-0">
+                <a href="dashboard.html" id="dashboardLink" class="main-nav-link text-indigo-600 hover:text-indigo-800 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+                    <i class="fas fa-chart-bar mr-2"></i> Dashboard
+                </a>
+                <a href="index.html" id="myKitchenLink" class="main-nav-link text-indigo-600 hover:text-indigo-800 px-4 py-2 rounded-md text-sm font-medium transition-colors duration-300">
+                    <i class="fas fa-home mr-2"></i> My Kitchen
+                </a>
+            </nav>
         </div>
-    </header>
+        <div id="userActions" class="hidden mt-4 sm:mt-2 text-center sm:text-right">
+            <span id="welcomeMessage" class="mr-4 text-gray-600 block sm:inline"></span>
+            <button id="logoutButton" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors text-sm mt-2 sm:mt-0">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </div>
+</header>
 
-    <nav class="bg-white shadow-sm py-2 sticky top-0 z-10">
-    <div class="container mx-auto px-4 flex justify-center space-x-4">
-        <a href="#pantry" class="text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium"><i class="fa-solid fa-rectangle-list"></i>   Pantry</a>
-        <a href="#meal-suggestions" class="text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium"><i class="fas fa-utensils"></i>  Meals</a>
-        <a href="#favorite-meals" class="text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium"><i class="fa-solid fa-star"></i>  Favorite Meals</a>
+<nav id="kitchenNav" class="bg-indigo-100 py-3 sticky top-0 z-10 transition-all duration-300 ease-in-out">
+    <div class="container mx-auto px-4">
+        <h2 class="text-xl font-semibold text-indigo-800 mb-2">My Kitchen</h2>
+        <div class="flex justify-start space-x-4 overflow-x-auto pb-2">
+            <a href="#pantry" class="section-nav-link text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors duration-300">
+                <i class="fa-solid fa-rectangle-list mr-2"></i> Pantry
+            </a>
+            <a href="#meal-suggestions" class="section-nav-link text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors duration-300">
+                <i class="fas fa-utensils mr-2"></i> Meals
+            </a>
+            <a href="#favorite-meals" class="section-nav-link text-indigo-600 hover:text-indigo-800 px-3 py-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors duration-300">
+                <i class="fa-solid fa-star mr-2"></i> Favorite Meals
+            </a>
+        </div>
     </div>
 </nav>
-
     <main class="flex-grow container mx-auto px-4 py-8">
         <div id="authForms" class="max-w-md mx-auto bg-white rounded-lg shadow-lg p-8 transform transition-all duration-300">
             <h2 class="text-2xl font-semibold mb-6 text-center text-gray-800">Welcome to Culinary Companion</h2>

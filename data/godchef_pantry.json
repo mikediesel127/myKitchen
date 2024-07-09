@@ -1,39 +1,9 @@
 {
   "pantry": [
     {
-      "name": "Beef",
-      "quantity": "1",
-      "category": "Meat"
-    },
-    {
-      "name": "Onion",
-      "quantity": "1",
-      "category": "Other"
-    },
-    {
-      "name": "Cheese",
-      "quantity": "1",
-      "category": "Dairy"
-    },
-    {
-      "name": "Potato",
-      "quantity": "1",
-      "category": "Produce"
-    },
-    {
-      "name": "Pasta",
-      "quantity": "1",
-      "category": "Grains"
-    },
-    {
       "name": "Garlic",
       "quantity": "1",
       "category": "Produce"
-    },
-    {
-      "name": "Olive Oil",
-      "quantity": "1",
-      "category": "Other"
     },
     {
       "name": "Pepper",
@@ -49,6 +19,31 @@
       "name": "Egg",
       "quantity": "1",
       "category": "Other"
+    },
+    {
+      "name": "Olive",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "Olive oil",
+      "quantity": "1",
+      "category": "Other"
+    },
+    {
+      "name": "Onion",
+      "quantity": "1",
+      "category": "Produce"
+    },
+    {
+      "name": "Beef",
+      "quantity": "1",
+      "category": "Meat"
+    },
+    {
+      "name": "Pasta",
+      "quantity": "1",
+      "category": "Grains"
     }
   ]
 }

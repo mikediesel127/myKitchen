@@ -71,21 +71,22 @@ function addIngredient() {
     const ingredientInput = document.getElementById('ingredientInput');
     const ingredient = ingredientInput.value.trim();
     if (ingredient) {
-        if (pantry.some(item => item.name.toLowerCase() === ingredient.toLowerCase())) {
-            showNotification(`${ingredient} is already in your pantry`, 'warning');
+        const formattedIngredient = ingredient.charAt(0).toUpperCase() + ingredient.slice(1).toLowerCase();
+        if (pantry.some(item => item.name.toLowerCase() === formattedIngredient.toLowerCase())) {
+            showNotification(`${formattedIngredient} is already in your pantry`, 'warning');
             return;
         }
-        const category = categorizeIngredient(ingredient);
+        const category = categorizeIngredient(formattedIngredient);
         const newItem = { 
-            name: ingredient, 
+            name: formattedIngredient, 
             quantity: '1', 
-            category: category || 'Other'
+            category: category
         };
         pantry.push(newItem);
         renderPantryItem(newItem);
         ingredientInput.value = '';
         savePantry();
-        showNotification(`${ingredient} added to pantry`, 'success');
+        showNotification(`${formattedIngredient} added to pantry`, 'success');
     }
 }
 
@@ -100,10 +101,10 @@ function renderPantryItem(item) {
     let categorySection = document.querySelector(`#pantryList .category-${item.category}`);
     if (!categorySection) {
         categorySection = document.createElement('div');
-        categorySection.className = `category-${item.category} mb-4`;
+        categorySection.className = `category-${item.category} category-section mb-4`;
         const icon = getCategoryIcon(item.category);
         categorySection.innerHTML = `
-            <h3 class="font-semibold text-lg mb-2 text-indigo-700">
+            <h3 class="category-header font-semibold text-lg mb-2 text-indigo-700 cursor-move">
                 <i class="${icon} mr-2"></i>${item.category}
             </h3>
         `;
@@ -159,62 +160,35 @@ function categorizeIngredient(ingredient) {
     const lowerIngredient = ingredient.toLowerCase();
     const categories = {
         'Produce': [
-            'apple', 'apples', 'banana', 'bananas', 'orange', 'oranges', 'lemon', 'lemons', 'lime', 'limes',
-            'strawberry', 'strawberries', 'blueberry', 'blueberries', 'raspberry', 'raspberries',
-            'blackberry', 'blackberries', 'grape', 'grapes', 'melon', 'melons', 'watermelon', 'watermelons',
-            'pineapple', 'pineapples', 'mango', 'mangoes', 'peach', 'peaches', 'pear', 'pears',
-            'plum', 'plums', 'cherry', 'cherries', 'kiwi', 'kiwis', 'avocado', 'avocados',
-            'tomato', 'tomatoes', 'potato', 'potatoes', 'carrot', 'carrots', 'onion', 'onions',
-            'garlic', 'ginger', 'lettuce', 'spinach', 'kale', 'cabbage', 'broccoli', 'cauliflower',
-            'pepper', 'peppers', 'cucumber', 'cucumbers', 'zucchini', 'eggplant', 'eggplants',
-            'squash', 'pumpkin', 'pumpkins', 'mushroom', 'mushrooms', 'corn', 'pea', 'peas',
-            'green bean', 'green beans', 'asparagus', 'celery', 'radish', 'radishes', 'beet', 'beets',
-            'turnip', 'turnips', 'sweet potato', 'sweet potatoes', 'yam', 'yams', 'okra',
-            'leek', 'leeks', 'shallot', 'shallots', 'scallion', 'scallions', 'cilantro', 'parsley',
-            'basil', 'mint', 'thyme', 'rosemary', 'sage', 'oregano', 'chive', 'chives'
+            'apple', 'banana', 'orange', 'lemon', 'lime', 'strawberry', 'blueberry', 'raspberry',
+            'blackberry', 'grape', 'melon', 'watermelon', 'pineapple', 'mango', 'peach', 'pear',
+            'plum', 'cherry', 'kiwi', 'avocado', 'tomato', 'potato', 'carrot', 'onion', 'garlic',
+            'ginger', 'lettuce', 'spinach', 'kale', 'cabbage', 'broccoli', 'cauliflower', 'pepper',
+            'cucumber', 'zucchini', 'eggplant', 'squash', 'pumpkin', 'mushroom', 'corn', 'pea',
+            'green bean', 'asparagus', 'celery', 'radish', 'beet', 'turnip', 'sweet potato', 'yam',
+            'okra', 'leek', 'shallot', 'scallion', 'cilantro', 'parsley', 'basil', 'mint', 'thyme',
+            'rosemary', 'sage', 'oregano', 'chive'
         ],
         'Dairy': [
-            'milk', 'cream', 'half-and-half', 'yogurt', 'yoghurt', 'cheese', 'butter', 'margarine',
-            'sour cream', 'cream cheese', 'cottage cheese', 'ricotta', 'mozzarella', 'parmesan',
-            'cheddar', 'gouda', 'feta', 'brie', 'goat cheese', 'whipped cream', 'condensed milk',
-            'evaporated milk', 'buttermilk', 'kefir', 'ghee', 'ice cream', 'gelato', 'custard',
-            'heavy cream', 'light cream', 'whipping cream', 'skim milk', 'whole milk', '2% milk',
-            '1% milk', 'almond milk', 'soy milk', 'oat milk', 'coconut milk', 'cashew milk'
+            'milk', 'cream', 'yogurt', 'cheese', 'butter', 'margarine', 'sour cream', 'cream cheese',
+            'cottage cheese', 'ricotta', 'mozzarella', 'parmesan', 'cheddar', 'gouda', 'feta', 'brie',
+            'goat cheese', 'whipped cream', 'condensed milk', 'evaporated milk', 'buttermilk', 'kefir',
+            'ghee', 'ice cream', 'gelato', 'custard'
         ],
         'Meat': [
             'chicken', 'beef', 'pork', 'lamb', 'turkey', 'duck', 'goose', 'veal', 'ham', 'bacon',
             'sausage', 'salami', 'pepperoni', 'prosciutto', 'ground beef', 'ground turkey',
-            'ground pork', 'steak', 'roast', 'chop', 'rib', 'liver', 'heart', 'kidney', 'tripe',
-            'chicken breast', 'chicken thigh', 'chicken wing', 'chicken leg', 'beef brisket',
-            'beef sirloin', 'beef tenderloin', 'pork chop', 'pork loin', 'pork belly', 'lamb chop',
-            'lamb shank', 'turkey breast', 'turkey leg', 'duck breast', 'veal chop', 'veal cutlet',
-            'ham hock', 'bacon bits', 'sausage link', 'italian sausage', 'bratwurst', 'hot dog',
-            'frankfurter', 'salami', 'pepperoni', 'prosciutto', 'pancetta', 'chorizo', 'meatball',
-            'meatloaf', 'jerky', 'beef jerky', 'corned beef', 'pastrami'
+            'ground pork', 'steak', 'roast', 'chop', 'rib', 'liver', 'heart', 'kidney', 'tripe'
         ],
         'Grains': [
-            'rice', 'pasta', 'noodle', 'noodles', 'bread', 'flour', 'oat', 'oats', 'barley',
-            'quinoa', 'couscous', 'cornmeal', 'cereal', 'wheat', 'rye', 'millet', 'buckwheat',
-            'semolina', 'bulgur', 'farro', 'amaranth', 'sorghum', 'spelt', 'teff', 'white rice',
-            'brown rice', 'wild rice', 'basmati rice', 'jasmine rice', 'sushi rice', 'arborio rice',
-            'spaghetti', 'penne', 'fettuccine', 'linguine', 'lasagna', 'macaroni', 'orzo',
-            'egg noodles', 'ramen', 'udon', 'soba', 'rice noodles', 'white bread', 'whole wheat bread',
-            'rye bread', 'sourdough', 'baguette', 'pita', 'naan', 'tortilla', 'wrap', 'bagel',
-            'croissant', 'roll', 'bun', 'muffin', 'waffle', 'pancake', 'biscuit', 'cracker',
-            'breadcrumb', 'breadcrumbs', 'wheat flour', 'all-purpose flour', 'bread flour',
-            'cake flour', 'pastry flour', 'cornstarch', 'tapioca starch', 'potato starch'
+            'rice', 'pasta', 'noodle', 'bread', 'flour', 'oat', 'barley', 'quinoa', 'couscous',
+            'cornmeal', 'cereal', 'wheat', 'rye', 'millet', 'buckwheat', 'semolina', 'bulgur',
+            'farro', 'amaranth', 'sorghum', 'spelt', 'teff'
         ],
         'Spices': [
             'salt', 'pepper', 'cinnamon', 'cumin', 'paprika', 'turmeric', 'ginger', 'garlic powder',
             'onion powder', 'chili powder', 'cayenne', 'nutmeg', 'allspice', 'cardamom', 'clove',
-            'coriander', 'fennel', 'mustard seed', 'saffron', 'vanilla bean', 'bay leaf',
-            'oregano', 'basil', 'thyme', 'rosemary', 'sage', 'parsley', 'dill', 'chives',
-            'tarragon', 'marjoram', 'mint', 'cilantro', 'black pepper', 'white pepper',
-            'red pepper flakes', 'chili flakes', 'curry powder', 'garam masala', 'five spice',
-            'herbes de provence', 'italian seasoning', 'zaatar', 'old bay', 'seasoned salt',
-            'garlic salt', 'onion salt', 'celery salt', 'lemon pepper', 'adobo', 'jerk seasoning',
-            'cajun seasoning', 'taco seasoning', 'poultry seasoning', 'pumpkin pie spice',
-            'apple pie spice', 'vanilla extract', 'almond extract', 'lemon extract', 'peppermint extract'
+            'coriander', 'fennel', 'mustard seed', 'saffron', 'vanilla', 'bay leaf'
         ]
     };
     
@@ -243,24 +217,33 @@ async function savePantry() {
         });
     } catch (error) {
         console.error('Error saving pantry:', error);
+        showNotification('Failed to save pantry changes', 'error');
     }
 }
 
 function removeIngredient(ingredientName) {
-    const itemElement = document.querySelector(`#pantryList li[data-name="${ingredientName}"]`);
+    // Remove the ingredient from the pantry array
+    pantry = pantry.filter(item => item.name !== ingredientName);
+
+    // Remove the ingredient from the DOM
+    const itemElement = document.querySelector(`#pantryList [data-name="${ingredientName}"]`);
     if (itemElement) {
         itemElement.classList.add('fade-out');
         setTimeout(() => {
             itemElement.remove();
-            const categorySection = itemElement.closest(`[class^="category-"]`);
-            if (categorySection && categorySection.querySelectorAll('li').length === 0) {
+            // Check if the category is now empty
+            const categorySection = itemElement.closest('.category-section');
+            if (categorySection && categorySection.querySelectorAll('.ingredient-card').length === 0) {
                 categorySection.remove();
             }
-        }, 300);
+        }, 300); // Match this with your CSS transition time
     }
-    pantry = pantry.filter(item => item.name !== ingredientName);
+
+    // Save the updated pantry
     savePantry();
-    showNotification(`${ingredientName} removed from pantry`);
+
+    // Show a notification
+    showNotification(`${ingredientName} removed from pantry`, 'info');
 }
 function toggleCategory(event) {
     const button = event.target;
@@ -393,8 +376,9 @@ function displayFavoriteMeals() {
         `;
 
         meals.forEach(meal => {
+            const mealId = `favorite-meal-${meal.name.replace(/\s+/g, '-').toLowerCase()}`;
             html += `
-                <li class="flex justify-between items-center bg-gray-100 p-3 rounded-lg transition-all hover:bg-gray-200">
+                <li id="${mealId}" class="flex justify-between items-center bg-gray-100 p-3 rounded-lg transition-all hover:bg-gray-200">
                     <span class="font-medium">${meal.name}</span>
                     <div>
                         <button class="text-blue-500 hover:text-blue-700 transition-colors mr-2" onclick="viewMeal('${meal.name}')">View</button>
@@ -633,7 +617,8 @@ function scrollToPantryItem(itemName) {
 }
 
 function scrollToFavoriteMeal(mealName) {
-    const favoriteMeal = document.querySelector(`#favoriteMealsList [data-name="${mealName}"]`);
+    const mealId = `favorite-meal-${mealName.replace(/\s+/g, '-').toLowerCase()}`;
+    const favoriteMeal = document.getElementById(mealId);
     if (favoriteMeal) {
         favoriteMeal.scrollIntoView({ behavior: 'smooth', block: 'center' });
         favoriteMeal.classList.add('highlight');
@@ -732,16 +717,31 @@ function setupAutocomplete() {
     document.getElementById('ingredientInput').setAttribute('list', 'ingredientSuggestions');
 }
 
+function updateCategoryOrder(categoryName, newIndex) {
+    // Implement the logic to update the order of categories in your data structure
+    // This might involve updating an array of category names or a similar data structure
+    // After updating, you may need to re-render the pantry list
+    console.log(`Category ${categoryName} moved to index ${newIndex}`);
+    // Implement the actual reordering logic here
+    // Then call updatePantryList() or a similar function to re-render the pantry
+}
+
 function setupDragAndDrop() {
-    const sortable = new Sortable(document.getElementById('pantryList'), {
-        animation: 150,
-        ghostClass: 'bg-blue-100',
-        onEnd: function (evt) {
-            const item = pantry[evt.oldIndex];
-            pantry.splice(evt.oldIndex, 1);
-            pantry.splice(evt.newIndex, 0, item);
-            savePantry();
-        },
+    const pantryList = document.getElementById('pantryList');
+    const sortables = pantryList.querySelectorAll('.category-section');
+    
+    sortables.forEach(sortable => {
+        new Sortable(sortable, {
+            group: 'category',
+            animation: 150,
+            handle: '.category-header', // This ensures only the header is draggable
+            ghostClass: 'bg-blue-100',
+            onEnd: function (evt) {
+                const categoryName = evt.item.querySelector('.category-header').textContent;
+                const newIndex = Array.from(pantryList.children).indexOf(evt.item);
+                updateCategoryOrder(categoryName, newIndex);
+            },
+        });
     });
 }
 
@@ -938,6 +938,19 @@ document.addEventListener('DOMContentLoaded', () => {
     setupAuthForms();
     document.getElementById('logoutButton').addEventListener('click', logout);
 
+    const currentPage = window.location.pathname.split('/').pop();
+    const dashboardLink = document.getElementById('dashboardLink');
+    const myKitchenLink = document.getElementById('myKitchenLink');
+    const kitchenNav = document.getElementById('kitchenNav');
+
+    // Set active state for main navigation
+    if (currentPage === 'dashboard.html') {
+        dashboardLink.classList.add('active');
+        if (kitchenNav) kitchenNav.style.display = 'none';
+    } else {
+        myKitchenLink.classList.add('active');
+    }
+
     fetch('/api/check-auth')
         .then(response => response.ok ? response.json() : Promise.reject('Not authenticated'))
         .then(data => {
@@ -950,6 +963,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 createCategoryFilters();
                 loadUserData();
                 document.getElementById('welcomeMessage').textContent = `Welcome, ${data.username}!`;
+
+                // Setup section navigation active states
+                if (kitchenNav) {
+                    const sectionLinks = document.querySelectorAll('.section-nav-link');
+                    const sections = document.querySelectorAll('main > div[id]');
+
+                    function setActiveSection() {
+                        let currentSection = '';
+                        sections.forEach(section => {
+                            const sectionTop = section.offsetTop - 100;
+                            const sectionHeight = section.clientHeight;
+                            if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
+                                currentSection = section.id;
+                            }
+                        });
+
+                        sectionLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${currentSection}`);
+                        });
+                    }
+
+                    window.addEventListener('scroll', setActiveSection);
+                    setActiveSection();
+                }
             } else {
                 showLoginForm();
             }
@@ -958,4 +995,13 @@ document.addEventListener('DOMContentLoaded', () => {
             console.error('Error checking authentication:', error);
             showLoginForm();
         });
+
+    // Setup mobile menu toggle if it exists
+    const mobileMenuButton = document.getElementById('mobileMenuButton');
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+    }
 });
